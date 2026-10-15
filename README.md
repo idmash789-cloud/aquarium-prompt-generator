@@ -5,9 +5,15 @@ akuarium, dengan **2 kategori**:
 
 1. **Predator** — Channa / Predator Fish vs Feeder Prey (video feeding),
    berdasarkan Ultra Master Prompt dari Dwi (15 Okt 2026).
-2. **Kontes / Show** — ikan hias (cupang, guppy, arwana, koi, mas koki,
-   discus, louhan, dll) bergerak elegan memamerkan sirip & warna;
+2. **Kontes / Show** — ikan hias bergerak elegan memamerkan sirip & warna;
    tanpa feeding, tanpa prey. Ditambahkan 15 Okt 2026.
+   Pilihan 2 tingkat: **14 jenis ikan** (cupang, guppy, arowana, koi,
+   mas koki, discus, angelfish, louhan, rainbowfish, channa show, oscar,
+   molly & platy, tetra school, corydoras school) lalu **98 strain/jenis/
+   warna** yang mengikuti jenisnya — mis. Cupang Halfmoon Platinum White
+   (full white), Guppy Black Moscow, Guppy AFR (Albino Full Red),
+   Guppy Albino Koi, Koi Albino Platinum (Ogon), Arowana Platinum
+   Snow White, Discus Albino Platinum, dan banyak lagi.
 
 Ada juga kolom **Request khusus (opsional)**: teks bebas (maks 300 karakter)
 yang disisipkan ke hasil sebagai "Special request" — untuk permintaan di luar
