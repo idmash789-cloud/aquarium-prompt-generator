@@ -11,6 +11,11 @@ h2 { margin: 0 0 12px; font-size: 1.05rem; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
 label { display: grid; gap: 5px; font-size: .85rem; color: #a9b8cc; }
 select { width: 100%; padding: 9px; border-radius: 9px; border: 1px solid #2b4470; background: #0d1628; color: #e6edf7; font-size: .92rem; }
+.catpick { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.catcard { display: flex; gap: 10px; align-items: flex-start; background: #0d1628; border: 1px solid #2b4470; border-radius: 12px; padding: 12px; cursor: pointer; color: #e6edf7; font-size: .95rem; }
+.catcard small { color: #8fa3bd; }
+.catcard:has(input:checked) { border-color: #2f6fed; background: #14264a; }
+.catcard input { margin-top: 3px; accent-color: #2f6fed; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 button { padding: 10px 14px; border-radius: 10px; border: 1px solid #2f6fed; background: #2f6fed; color: #fff; font-weight: 600; cursor: pointer; font-size: .92rem; }
 button.secondary { background: #16233c; border-color: #2b4470; color: #dbe7f7; }

@@ -1,14 +1,22 @@
-# Aquarium Predator Prompt Generator
+# Aquarium Prompt Generator — Predator & Kontes/Show
 
 Web app statis (HTML/CSS/JS, tanpa backend) untuk membuat prompt video AI
-**Channa / Predator Fish vs Feeder Prey — Aquarium Feeding**.
+akuarium, dengan **2 kategori**:
 
-Berdasarkan Ultra Master Prompt dari Dwi (15 Okt 2026).
+1. **Predator** — Channa / Predator Fish vs Feeder Prey (video feeding),
+   berdasarkan Ultra Master Prompt dari Dwi (15 Okt 2026).
+2. **Kontes / Show** — ikan hias (cupang, guppy, arwana, koi, mas koki,
+   discus, louhan, dll) bergerak elegan memamerkan sirip & warna;
+   tanpa feeding, tanpa prey. Ditambahkan 15 Okt 2026.
 
 ## Cara pakai
 1. Buka `index.html` (atau hosting folder ini di GitHub Pages).
-2. Pilih ikan predator, prey, substrate, dekorasi, background, air, kamera,
-   posisi awal, arah strike, detik strike, pencahayaan, suara, dan outcome.
+2. Pilih kategori di bagian atas: **Predator** atau **Kontes / Show**.
+3. Untuk Predator: pilih ikan predator, prey, substrate, dekorasi, background,
+   air, kamera, posisi awal, arah strike, detik strike, pencahayaan, suara,
+   dan outcome. Untuk Kontes/Show: pilih ikan kontes, dasar & dekorasi tank
+   show, backdrop, air, kamera, posisi awal, arah gerakan, gerakan elegan
+   utama, detik puncak display, pencahayaan kontes, dan suara.
 3. Klik salah satu:
    - **Buat Prompt Video** — 1 prompt detail siap copy (±1.800–2.600 karakter,
      1 paragraf) + Title + Caption.

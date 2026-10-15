@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aquarium Predator Prompt Generator — Channa vs Feeder Prey</title>
+<title>Aquarium Prompt Generator — Predator & Ikan Kontes/Show</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <h1>🐟 Aquarium Predator Prompt Generator</h1>
-  <p>Channa / Predator Fish vs Feeder Prey — pilih-pilih bahannya, prompt video siap copy langsung jadi. Khusus video feeding akuarium fiksi AI, gaya raw smartphone.</p>
+  <h1>🐟 Aquarium Prompt Generator</h1>
+  <p>Dua kategori: <strong>Predator</strong> (Channa / predator fish vs feeder prey, video feeding) dan <strong>Kontes / Show</strong> (ikan hias bergerak elegan memamerkan sirip &amp; warna). Pilih-pilih bahannya, prompt video siap copy langsung jadi. Semua fiksi AI, gaya raw smartphone.</p>
   <div class="locks">
     <span>🔒 10 detik</span><span>🔒 Vertikal 9:16</span><span>🔒 Raw smartphone</span>
     <span>🔒 1 kamera tetap</span><span>🔒 Tanpa musik / narasi</span><span>🔒 Non-graphic</span><span>🔒 Negative lock otomatis</span>
@@ -18,8 +18,19 @@
 
 <main>
   <section class="panel">
-    <h2>1. Pilih-pilih bahannya</h2>
-    <div class="grid">
+    <h2>1. Pilih kategori dulu</h2>
+    <div class="catpick">
+      <label class="catcard">
+        <input type="radio" name="category" value="predator" checked>
+        <span>🦈 <strong>Predator</strong><br><small>Feeding: ikan predator vs prey</small></span>
+      </label>
+      <label class="catcard">
+        <input type="radio" name="category" value="show">
+        <span>🏆 <strong>Kontes / Show</strong><br><small>Ikan hias bergerak elegan, pamer sirip &amp; warna</small></span>
+      </label>
+    </div>
+    <h2>2. Pilih-pilih bahannya</h2>
+    <div class="grid" id="predatorFields">
       <label>Ikan predator
         <select id="fish"></select>
       </label>
@@ -67,6 +78,44 @@
         </select>
       </label>
     </div>
+    <div class="grid" id="showFields" style="display:none">
+      <label>Ikan kontes / show
+        <select id="showFish"></select>
+      </label>
+      <label>Dasar tank show
+        <select id="showSubstrate"></select>
+      </label>
+      <label>Dekorasi tank show
+        <select id="showDecor"></select>
+      </label>
+      <label>Backdrop
+        <select id="showBackground"></select>
+      </label>
+      <label>Air
+        <select id="showWater"></select>
+      </label>
+      <label>Angle kamera HP
+        <select id="showCamera"></select>
+      </label>
+      <label>Posisi awal ikan
+        <select id="showStart"></select>
+      </label>
+      <label>Arah gerakan
+        <select id="showDirection"></select>
+      </label>
+      <label>Gerakan elegan utama
+        <select id="showMovement"></select>
+      </label>
+      <label>Puncak display di detik ke-
+        <select id="showPeakTime"></select>
+      </label>
+      <label>Pencahayaan kontes
+        <select id="showLighting"></select>
+      </label>
+      <label>Penekanan suara alami
+        <select id="showSound"></select>
+      </label>
+    </div>
     <div class="actions">
       <button id="btnRandom" class="secondary">🎲 Acak Semua</button>
       <button id="btnPrompt">⚡ Buat Prompt Video</button>
@@ -74,11 +123,12 @@
       <button id="btnBatch" class="secondary">🔟 Buat 10 Ide Unik</button>
       <button id="btnStoryboard" class="secondary">🎬 Buat Prompt Storyboard 6 Frame</button>
     </div>
-    <p class="note">Aturan permanen dari Ultra Master Prompt otomatis terkunci di setiap hasil: struktur timing 0–2 / 2–4 / 4–6 / 6–8 / 8–10 detik, fisika &amp; anatomi realistis, akuarium stabil, prey besar tidak ditelan utuh secara mustahil, dan negative prompt lengkap di akhir. Tikus kecil hanya dipakai kalau kamu pilih sendiri.</p>
+    <p class="note" id="predatorNote">Aturan permanen dari Ultra Master Prompt otomatis terkunci di setiap hasil: struktur timing 0–2 / 2–4 / 4–6 / 6–8 / 8–10 detik, fisika &amp; anatomi realistis, akuarium stabil, prey besar tidak ditelan utuh secara mustahil, dan negative prompt lengkap di akhir. Tikus kecil hanya dipakai kalau kamu pilih sendiri.</p>
+    <p class="note" id="showNote" style="display:none">Kategori Kontes / Show terkunci: 10 detik 9:16 raw smartphone, tank show bersih &amp; stabil, 1 ikan saja (kecuali ikan schooling), tanpa feeding &amp; tanpa prey — klimaksnya adalah momen display sirip &amp; warna di detik yang kamu pilih, ditutup pose cantik di tengah frame. Negative prompt lengkap otomatis di akhir.</p>
   </section>
 
   <section class="panel">
-    <h2>2. Hasil — siap copy</h2>
+    <h2>3. Hasil — siap copy</h2>
     <div class="tabs">
       <button class="tabbtn active" data-tab="tabPrompt">Prompt Video</button>
       <button class="tabbtn" data-tab="tabIdea">Ide Topik</button>

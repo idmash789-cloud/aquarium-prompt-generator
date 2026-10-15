@@ -136,6 +136,91 @@ function buildStoryboard(sel) {
   return `Create one single composite storyboard image with six equally sized panels, raw smartphone realism, the same ${fish.name} (${fish.look}), the same prey (${prey.desc}), the same aquarium (${sel.substrate}, ${sel.decor}, ${sel.background}) and the same camera (${sel.camera}) in every panel, no cinematic borders, no cartoon style, no camera-angle change. Frame 1 - 0:00: predator ${sel.fishStart}, prey visible ${sel.preyStart}, open water between them. Frame 2 - 0:02: fish notices the prey, slight body turn toward it. Frame 3 - 0:04: fish aligned and locked on, holding still before the strike. Frame 4 - 0:06: sudden lunge ${sel.strikeDirection}, fish seizes the prey, water disturbed with natural motion blur. Frame 5 - 0:08: ${outcome === "whole" ? "fish swallowing the prey, prey nearly fully inside its mouth" : "fish gripping and repositioning the oversized prey, biting off one portion"}. Frame 6 - 0:10: final feeding result, ${last}, water settling. Add only a small clear timestamp in the corner of each panel and no other text.`;
 }
 
+/* ================= KATEGORI 2: IKAN KONTES / SHOW =================
+   Added 2026-10-15 at Dwi's request: show/contest fish moving elegantly.
+   Same locked skeleton (10s, 9:16, raw smartphone, stable tank, one camera,
+   natural audio, negative lock) but NO feeding and NO prey — the payoff is
+   the peak fin/color display moment instead of a strike. */
+
+const SHOW_FISH = [
+  { name: "Cupang Halfmoon (Betta)", short: "Betta", look: "a deep red body with an enormous flowing half-moon tail and long veil-like fins" },
+  { name: "Cupang Crowntail (Betta)", short: "Betta", look: "an electric blue body with a spiky crown-shaped tail with fine ray extensions" },
+  { name: "Cupang Plakat Dragon (Betta)", short: "Betta", look: "a short-finned metallic dragon-scale body in copper, silver and black" },
+  { name: "Guppy Fancy", short: "Guppy", look: "a small bright male guppy with a huge flowing orange-red patterned tail like an open fan" },
+  { name: "Arowana Super Red", short: "Arowana", look: "a large long body covered in metallic red scales with a flowing double tail fin" },
+  { name: "Arowana Golden Crossback", short: "Arowana", look: "a large long body with golden metallic scales shining across its back" },
+  { name: "Arowana Silver", short: "Arowana", look: "a large long body with mirror-silver scales and an upturned mouth" },
+  { name: "Koi Kohaku", short: "Koi", look: "a smooth powerful white body with bold hi-red patches" },
+  { name: "Mas Koki Oranda", short: "Oranda", look: "a round orange body with a flowing double tail and a raspberry-like head growth" },
+  { name: "Mas Koki Ranchu", short: "Ranchu", look: "a round red-and-white body with a curved back, no dorsal fin and a short fan tail" },
+  { name: "Discus", short: "Discus", look: "a tall round body with turquoise and red vertical patterning" },
+  { name: "Angelfish (Manfish)", short: "Angelfish", look: "a tall triangular silver body with black vertical stripes and long trailing fins" },
+  { name: "Louhan (Flowerhorn)", short: "Flowerhorn", look: "a vivid red-orange body with flower-like markings and a prominent rounded head hump" },
+  { name: "Rainbowfish Boesemani", short: "Rainbowfish", look: "a split-color body, bright orange rear half and blue-green front half" },
+  { name: "Cardinal Tetra School", short: "Tetra School", look: "a small school of neon blue and red cardinal tetras moving together as one shimmering group", group: true },
+];
+
+const SHOW_OPTIONS = {
+  substrate: ["a clean bare show-tank bottom", "dark fine substrate", "light sand bottom", "a clean reflective bare bottom"],
+  decor: ["a completely bare show tank with no decorations", "one minimal green plant in a back corner", "a single smooth stone", "nothing but the plain backdrop"],
+  background: ["a matte black backdrop that makes the colors pop", "a deep blue backdrop", "a clean light-grey backdrop", "a dark green backdrop"],
+  water: ["crystal-clear polished water", "clear water with a slight blue tint", "clear warm-tinted water"],
+  camera: ["a front-facing glass view", "a slightly front-side angle", "a mild above-front angle", "a tripod-like fixed phone position at the front glass"],
+  start: ["center-left mid-water with its full body visible", "on the left side near the front glass", "in the exact center of the tank", "on the right side mid-water", "low near the bottom, ready to rise gracefully"],
+  direction: ["left to right", "right to left", "diagonally across the tank", "in a slow circle in the center"],
+  movement: ["a slow elegant cruise with fins flowing behind it", "a graceful S-curve turn that displays both sides of its body", "a full fin-flare display, spreading every fin wide and holding the pose", "a gentle rise toward the surface followed by a smooth level glide", "a slow circular display turn in the center of the tank", "a flowing tail-sweep pass along the front glass"],
+  peakTime: ["5.5", "6.0", "6.5", "7.0"],
+  lighting: ["bright full-spectrum contest LED lighting from above", "warm white lighting that enhances red and gold colors", "cool white lighting that enhances blue and silver colors", "soft daylight-style lighting from above"],
+  sound: ["quiet room ambience and soft filter bubbles", "gentle surface ripples and a soft filter hum", "near-silent clean aquarium ambience", "soft bubble noise and calm water movement"],
+};
+
+const SHOW_TITLES = [
+  f => `This ${f} Moves Like Royalty`,
+  f => `The Colors on This ${f} Are Unreal`,
+  f => `Born for the Contest Tank`,
+  f => `This ${f} Knows It Looks Good`,
+];
+
+function buildShowPrompt(sel) {
+  const fish = sel.fish, t = parseFloat(sel.peakTime);
+  const solo = fish.group ? "one small school moving together as a single group, with no stray fish" : "a single fish alone in the tank, with no other fish";
+  const body =
+`Create an exactly 10-second vertical 9:16 fictional AI-generated aquarium show-fish video designed to look like a raw modern smartphone recording of a beautiful contest fish inside a clean home show aquarium. The fish is a ${fish.name} with ${fish.look}, shown as ${solo}. The show tank has clear glass, a visible water line, ${sel.water}, ${sel.substrate}, ${sel.decor}, and ${sel.background}, with natural glass reflections and gentle filter bubbles, and it never changes layout or clarity. The camera uses ${sel.camera}, mostly fixed with subtle micro-shake, autofocus breathing, slight sensor noise and natural motion blur only on the fastest fin movement, under ${sel.lighting} that makes its true colors shine. First frame: the fish is ${sel.start}, full body and full fin shape clearly readable, like a contestant being presented to a judge. 0.00-2.00 seconds: the fish holds a beautiful opening pose with fins naturally spread, colors immediately readable. 2.00-4.00 seconds: it begins ${sel.movement}, moving ${sel.direction} with slow elegant body motion and fins flowing smoothly in the water. 4.00-6.00 seconds: it continues the display with a graceful turn, showing its fin shape and color pattern from a new side without any sudden movement. 6.00-8.00 seconds: at about ${t.toFixed(1)} seconds comes the peak display moment, its fins spread at their widest and its colors at their brightest as it holds the most elegant pose of the video. 8.00-10.00 seconds: it glides slowly into a final centered beauty pose, fins still flowing, and the video ends on that pose with a hard cut. Keep the species, color pattern, fin shape and body size constant for the whole video, with realistic fin flow, water resistance, turning and shadows and no clipping through glass or decor. Audio is only natural aquarium sound: ${sel.sound}, with no music, no narration and no voice-over. No feeding, no prey, no cinematic style, no camera cuts, no angle changes, no zoom, no slow motion, no subtitles, no text, no watermark, no extra fish, no duplicate fish, no deformed or torn fins, no changing colors or pattern, no changing aquarium, no dirty or cloudy water, no cartoon style, no glossy ad look and no obvious AI errors.`;
+  const title = fish.group ? `This Tiny School Moves as One` : pick(SHOW_TITLES)(fish.short);
+  const caption = `The ${fish.short.toLowerCase()} takes its time showing off every color and fin. Watch the peak display near the end.`;
+  return { body, title, caption, chars: body.length };
+}
+
+function buildShowIdea(sel) {
+  const fish = sel.fish;
+  return {
+    heading: `${fish.name} — Elegant Show`,
+    fish: `${fish.name} — ${fish.look}.`,
+    tank: `${sel.water.charAt(0).toUpperCase() + sel.water.slice(1)}, ${sel.substrate}, ${sel.decor}, ${sel.background}; lighting: ${sel.lighting}; camera: ${sel.camera}.`,
+    action: `Fish opens ${sel.start}, then performs ${sel.movement} moving ${sel.direction}; peak fin-and-color display at about ${sel.peakTime} seconds, ending in a centered beauty pose.`,
+    hook: "Slow royal movement plus one peak fin display makes viewers replay it just to watch the fins flow again.",
+  };
+}
+function showIdeaToText(idea, n) {
+  return `${n}. ${idea.heading}\nFish: ${idea.fish}\nTank: ${idea.tank}\n10-second elegant action: ${idea.action}\nViral hook: ${idea.hook}`;
+}
+function buildShowBatch10(rng) {
+  const fishes = shuffle(SHOW_FISH, rng).slice(0, 10);
+  return fishes.map(fish => buildShowIdea({
+    fish,
+    substrate: pick(SHOW_OPTIONS.substrate, rng), decor: pick(SHOW_OPTIONS.decor, rng),
+    background: pick(SHOW_OPTIONS.background, rng), water: pick(SHOW_OPTIONS.water, rng),
+    camera: pick(SHOW_OPTIONS.camera, rng), start: pick(SHOW_OPTIONS.start, rng),
+    direction: pick(SHOW_OPTIONS.direction, rng), movement: pick(SHOW_OPTIONS.movement, rng),
+    peakTime: pick(SHOW_OPTIONS.peakTime, rng), lighting: pick(SHOW_OPTIONS.lighting, rng),
+    sound: pick(SHOW_OPTIONS.sound, rng),
+  }));
+}
+function buildShowStoryboard(sel) {
+  const fish = sel.fish;
+  return `Create one single composite storyboard image with six equally sized panels, raw smartphone realism, the same ${fish.name} (${fish.look}), the same show tank (${sel.substrate}, ${sel.decor}, ${sel.background}) and the same camera (${sel.camera}) in every panel, no cinematic borders, no cartoon style, no camera-angle change. Frame 1 - 0:00: fish ${sel.start}, full body and fins readable in an opening contest pose. Frame 2 - 0:02: fish begins ${sel.movement}, moving ${sel.direction}. Frame 3 - 0:04: graceful turn showing fin shape and colors from a new side. Frame 4 - 0:06: peak display moment, fins spread at their widest, colors at their brightest. Frame 5 - 0:08: fish gliding slowly out of the display, fins still flowing. Frame 6 - 0:10: final centered beauty pose, fins spread, hard end frame. Add only a small clear timestamp in the corner of each panel and no other text.`;
+}
+
 /* ---------- Browser UI ---------- */
 if (typeof document !== "undefined") {
   const $ = id => document.getElementById(id);
@@ -149,6 +234,8 @@ if (typeof document !== "undefined") {
     fillSelect("fish", FISH, f => f.name);
     fillSelect("prey", PREY, p => p.name + (p.name === "small mouse" ? " (khusus, hanya jika diminta)" : ""));
     ["substrate", "decor", "background", "water", "camera", "fishStart", "preyStart", "strikeDirection", "strikeTime", "lighting", "sound"].forEach(k => fillOpt(k, OPTIONS[k]));
+    fillSelect("showFish", SHOW_FISH, f => f.name);
+    ["substrate", "decor", "background", "water", "camera", "start", "direction", "movement", "peakTime", "lighting", "sound"].forEach(k => fillOpt("show" + k.charAt(0).toUpperCase() + k.slice(1), SHOW_OPTIONS[k]));
     const getSel = () => ({
       fish: FISH[+$("fish").value], prey: PREY[+$("prey").value],
       substrate: OPTIONS.substrate[+$("substrate").value], decor: OPTIONS.decor[+$("decor").value],
@@ -158,22 +245,62 @@ if (typeof document !== "undefined") {
       strikeTime: OPTIONS.strikeTime[+$("strikeTime").value], lighting: OPTIONS.lighting[+$("lighting").value],
       sound: OPTIONS.sound[+$("sound").value], outcome: $("outcome").value,
     });
+    const getShowSel = () => ({
+      fish: SHOW_FISH[+$("showFish").value],
+      substrate: SHOW_OPTIONS.substrate[+$("showSubstrate").value], decor: SHOW_OPTIONS.decor[+$("showDecor").value],
+      background: SHOW_OPTIONS.background[+$("showBackground").value], water: SHOW_OPTIONS.water[+$("showWater").value],
+      camera: SHOW_OPTIONS.camera[+$("showCamera").value], start: SHOW_OPTIONS.start[+$("showStart").value],
+      direction: SHOW_OPTIONS.direction[+$("showDirection").value], movement: SHOW_OPTIONS.movement[+$("showMovement").value],
+      peakTime: SHOW_OPTIONS.peakTime[+$("showPeakTime").value], lighting: SHOW_OPTIONS.lighting[+$("showLighting").value],
+      sound: SHOW_OPTIONS.sound[+$("showSound").value],
+    });
+    const category = () => document.querySelector("input[name=category]:checked").value;
+    function applyCategory() {
+      const isShow = category() === "show";
+      $("predatorFields").style.display = isShow ? "none" : "";
+      $("showFields").style.display = isShow ? "" : "none";
+      $("predatorNote").style.display = isShow ? "none" : "";
+      $("showNote").style.display = isShow ? "" : "none";
+    }
+    document.querySelectorAll("input[name=category]").forEach(r => r.addEventListener("change", () => { applyCategory(); $("btnPrompt").click(); }));
     function show(id, text) { $(id).textContent = text; }
     function randomize() {
       const set = (id, n) => { $(id).value = Math.floor(Math.random() * n); };
-      set("fish", FISH.length); set("prey", PREY.filter(p => p.name !== "small mouse").length);
-      ["substrate", "decor", "background", "water", "camera", "fishStart", "preyStart", "strikeDirection", "strikeTime", "lighting", "sound"].forEach(k => set(k, OPTIONS[k].length));
+      if (category() === "show") {
+        set("showFish", SHOW_FISH.length);
+        ["showSubstrate", "showDecor", "showBackground", "showWater", "showCamera", "showStart", "showDirection", "showMovement", "showPeakTime", "showLighting", "showSound"].forEach((id, i) => set(id, Object.values(SHOW_OPTIONS)[i].length));
+      } else {
+        set("fish", FISH.length); set("prey", PREY.filter(p => p.name !== "small mouse").length);
+        ["substrate", "decor", "background", "water", "camera", "fishStart", "preyStart", "strikeDirection", "strikeTime", "lighting", "sound"].forEach(k => set(k, OPTIONS[k].length));
+      }
     }
     $("btnRandom").onclick = () => { randomize(); $("btnPrompt").click(); };
     $("btnPrompt").onclick = () => {
-      const r = buildPrompt(getSel());
-      show("outPrompt", `${r.body}\n\nTitle: ${r.title}\nCaption: ${r.caption}`);
-      show("promptMeta", `${r.chars} karakter (target master prompt: 1.800-2.600) - Outcome: ${r.outcome === "whole" ? "telan utuh" : "potong sebagian"}`);
+      if (category() === "show") {
+        const r = buildShowPrompt(getShowSel());
+        show("outPrompt", `${r.body}\n\nTitle: ${r.title}\nCaption: ${r.caption}`);
+        show("promptMeta", `${r.chars} karakter - Kategori: Kontes / Show (tanpa feeding, puncak display sirip & warna)`);
+      } else {
+        const r = buildPrompt(getSel());
+        show("outPrompt", `${r.body}\n\nTitle: ${r.title}\nCaption: ${r.caption}`);
+        show("promptMeta", `${r.chars} karakter (target master prompt: 1.800-2.600) - Outcome: ${r.outcome === "whole" ? "telan utuh" : "potong sebagian"}`);
+      }
       activateTab("tabPrompt");
     };
-    $("btnIdea").onclick = () => { show("outIdea", ideaToText(buildIdea(getSel()), 1)); activateTab("tabIdea"); };
-    $("btnBatch").onclick = () => { show("outBatch", "Here are 10 fresh aquarium predator-fish feeding video ideas:\n\n" + buildBatch10().map((idea, i) => ideaToText(idea, i + 1)).join("\n\n")); activateTab("tabBatch"); };
-    $("btnStoryboard").onclick = () => { show("outStoryboard", buildStoryboard(getSel())); activateTab("tabStoryboard"); };
+    $("btnIdea").onclick = () => {
+      if (category() === "show") { show("outIdea", showIdeaToText(buildShowIdea(getShowSel()), 1)); }
+      else { show("outIdea", ideaToText(buildIdea(getSel()), 1)); }
+      activateTab("tabIdea");
+    };
+    $("btnBatch").onclick = () => {
+      if (category() === "show") { show("outBatch", "Here are 10 fresh aquarium show-fish video ideas:\n\n" + buildShowBatch10().map((idea, i) => showIdeaToText(idea, i + 1)).join("\n\n")); }
+      else { show("outBatch", "Here are 10 fresh aquarium predator-fish feeding video ideas:\n\n" + buildBatch10().map((idea, i) => ideaToText(idea, i + 1)).join("\n\n")); }
+      activateTab("tabBatch");
+    };
+    $("btnStoryboard").onclick = () => {
+      show("outStoryboard", category() === "show" ? buildShowStoryboard(getShowSel()) : buildStoryboard(getSel()));
+      activateTab("tabStoryboard");
+    };
     document.querySelectorAll("[data-copy]").forEach(btn => {
       btn.onclick = async () => {
         const target = $(btn.getAttribute("data-copy"));
@@ -187,7 +314,7 @@ if (typeof document !== "undefined") {
       document.querySelectorAll(".tabpane").forEach(p => p.classList.toggle("active", p.id === id));
     };
     document.querySelectorAll(".tabbtn").forEach(b => b.onclick = () => activateTab(b.dataset.tab));
-    randomize(); $("btnPrompt").click();
+    applyCategory(); randomize(); $("btnPrompt").click();
   });
 }
-if (typeof module !== "undefined") { module.exports = { FISH, PREY, OPTIONS, buildPrompt, buildIdea, buildBatch10, buildStoryboard, resolveOutcome }; }
+if (typeof module !== "undefined") { module.exports = { FISH, PREY, OPTIONS, buildPrompt, buildIdea, buildBatch10, buildStoryboard, resolveOutcome, SHOW_FISH, SHOW_OPTIONS, buildShowPrompt, buildShowIdea, buildShowBatch10, buildShowStoryboard }; }
