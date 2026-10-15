@@ -9,6 +9,10 @@ akuarium, dengan **2 kategori**:
    discus, louhan, dll) bergerak elegan memamerkan sirip & warna;
    tanpa feeding, tanpa prey. Ditambahkan 15 Okt 2026.
 
+Ada juga kolom **Request khusus (opsional)**: teks bebas (maks 300 karakter)
+yang disisipkan ke hasil sebagai "Special request" — untuk permintaan di luar
+pilihan yang tersedia, di kedua kategori dan semua mode output.
+
 ## Cara pakai
 1. Buka `index.html` (atau hosting folder ini di GitHub Pages).
 2. Pilih kategori di bagian atas: **Predator** atau **Kontes / Show**.

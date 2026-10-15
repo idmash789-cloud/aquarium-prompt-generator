@@ -66,6 +66,14 @@ const TITLE_PORTION = [
   (f, p) => `Too Big to Swallow in One Go`,
 ];
 
+function cleanCustom(text) {
+  return (text || "").replace(/\s+/g, " ").trim().slice(0, 300);
+}
+function customSentence(sel) {
+  const c = cleanCustom(sel && sel.custom);
+  if (!c) return "";
+  return ` Special request from the creator: ${c}${/[.!?]$/.test(c) ? "" : "."}`;
+}
 function pick(arr, rng) { return arr[Math.floor((rng || Math.random)() * arr.length)]; }
 function shuffle(arr, rng) {
   const a = arr.slice(); const r = rng || Math.random;
@@ -85,7 +93,7 @@ function buildPrompt(sel) {
     : "because the prey is too large to swallow whole, the fish grips it, repositions it with one short shake, bites off and swallows only one portion, while the rest stays partly visible and drifts down slowly";
   const t = parseFloat(sel.strikeTime);
   const body =
-`Create an exactly 10-second vertical 9:16 fictional AI-generated aquarium feeding video designed to look like a raw modern smartphone recording of a predator fish inside a home aquarium. The predator is a ${fish.name} with ${fish.look}, large and instantly readable on screen. The prey is ${prey.desc}, positioned ${sel.preyStart}. The aquarium has clear glass, a visible water line, ${sel.water}, a ${sel.substrate}, ${sel.decor}, and a ${sel.background}, with glass reflections and filter bubbles, and it never changes layout or clarity. The camera uses ${sel.camera}, mostly fixed with subtle micro-shake, autofocus breathing, slight sensor noise and motion blur only during the strike, under ${sel.lighting}. First frame: the predator is ${sel.fishStart}, prey already visible, open water between them. 0.00-2.00 seconds: the fish hovers or cruises slowly while the prey moves naturally. 2.00-4.00 seconds: the fish notices the prey, with a slight body turn and slow glide, while the prey keeps paddling, drifting or twitching. 4.00-6.00 seconds: the fish aligns, locks focus and holds still for a beat as the prey reacts subtly. 6.00-8.00 seconds: at about ${t.toFixed(1)} seconds the fish lunges suddenly ${sel.strikeDirection} and seizes the prey in one believable strike, with disturbed water and body flex. 8.00-10.00 seconds: ${outcomeText}, the water settles, and the video ends on that readable result with a hard cut. Keep fish species, pattern and fin count and prey species, size and anatomy constant, with realistic water resistance and shadows. Audio is only natural aquarium sound: ${sel.sound}, with no music, no narration and no voice-over. No cinematic style, no camera cuts, no angle changes, no zoom, no slow motion, no subtitles, no text, no watermark, no impossible anatomy, no extra or missing fins, no duplicate fish or prey, no changing aquarium, no transforming water, no floating through glass, no prey teleportation, no instant unrealistic swallowing, no gore, no fantasy lighting, no glossy ad look and no obvious AI errors.`;
+`Create an exactly 10-second vertical 9:16 fictional AI-generated aquarium feeding video designed to look like a raw modern smartphone recording of a predator fish inside a home aquarium. The predator is a ${fish.name} with ${fish.look}, large and instantly readable on screen. The prey is ${prey.desc}, positioned ${sel.preyStart}. The aquarium has clear glass, a visible water line, ${sel.water}, a ${sel.substrate}, ${sel.decor}, and a ${sel.background}, with glass reflections and filter bubbles, and it never changes layout or clarity. The camera uses ${sel.camera}, mostly fixed with subtle micro-shake, autofocus breathing, slight sensor noise and motion blur only during the strike, under ${sel.lighting}. First frame: the predator is ${sel.fishStart}, prey already visible, open water between them. 0.00-2.00 seconds: the fish hovers or cruises slowly while the prey moves naturally. 2.00-4.00 seconds: the fish notices the prey, with a slight body turn and slow glide, while the prey keeps paddling, drifting or twitching. 4.00-6.00 seconds: the fish aligns, locks focus and holds still for a beat as the prey reacts subtly. 6.00-8.00 seconds: at about ${t.toFixed(1)} seconds the fish lunges suddenly ${sel.strikeDirection} and seizes the prey in one believable strike, with disturbed water and body flex. 8.00-10.00 seconds: ${outcomeText}, the water settles, and the video ends on that readable result with a hard cut. Keep fish species, pattern and fin count and prey species, size and anatomy constant, with realistic water resistance and shadows. Audio is only natural aquarium sound: ${sel.sound}, with no music, no narration and no voice-over.${customSentence(sel)} No cinematic style, no camera cuts, no angle changes, no zoom, no slow motion, no subtitles, no text, no watermark, no impossible anatomy, no extra or missing fins, no duplicate fish or prey, no changing aquarium, no transforming water, no floating through glass, no prey teleportation, no instant unrealistic swallowing, no gore, no fantasy lighting, no glossy ad look and no obvious AI errors.`;
   const titleList = outcome === "portion" ? TITLE_PORTION.concat(TITLE_TEMPLATES) : TITLE_TEMPLATES;
   const title = pick(titleList)(fish.short, prey.short);
   const caption = outcome === "portion"
@@ -107,11 +115,12 @@ function buildIdea(sel) {
     hook: outcome === "portion"
       ? "Viewers stay to see whether the fish can finish a prey that clearly does not fit in one bite."
       : "The long silent stare followed by one explosive strike makes viewers watch until the very last second.",
+    custom: cleanCustom(sel.custom),
   };
 }
 
 function ideaToText(idea, n) {
-  return `${n}. ${idea.heading}\nFish: ${idea.fish}\nPrey: ${idea.prey}\nAquarium: ${idea.aquarium}\n10-second action: ${idea.action}\nViral hook: ${idea.hook}`;
+  return `${n}. ${idea.heading}\nFish: ${idea.fish}\nPrey: ${idea.prey}\nAquarium: ${idea.aquarium}\n10-second action: ${idea.action}\nViral hook: ${idea.hook}${idea.custom ? `\nSpecial request: ${idea.custom}` : ""}`;
 }
 
 function buildBatch10(rng) {
@@ -133,7 +142,7 @@ function buildStoryboard(sel) {
   const fish = sel.fish, prey = sel.prey;
   const outcome = resolveOutcome(prey, sel.outcome);
   const last = outcome === "whole" ? "prey swallowed whole, fish holding still" : "fish swallows one bitten portion, remaining portion drifting down";
-  return `Create one single composite storyboard image with six equally sized panels, raw smartphone realism, the same ${fish.name} (${fish.look}), the same prey (${prey.desc}), the same aquarium (${sel.substrate}, ${sel.decor}, ${sel.background}) and the same camera (${sel.camera}) in every panel, no cinematic borders, no cartoon style, no camera-angle change. Frame 1 - 0:00: predator ${sel.fishStart}, prey visible ${sel.preyStart}, open water between them. Frame 2 - 0:02: fish notices the prey, slight body turn toward it. Frame 3 - 0:04: fish aligned and locked on, holding still before the strike. Frame 4 - 0:06: sudden lunge ${sel.strikeDirection}, fish seizes the prey, water disturbed with natural motion blur. Frame 5 - 0:08: ${outcome === "whole" ? "fish swallowing the prey, prey nearly fully inside its mouth" : "fish gripping and repositioning the oversized prey, biting off one portion"}. Frame 6 - 0:10: final feeding result, ${last}, water settling. Add only a small clear timestamp in the corner of each panel and no other text.`;
+  return `Create one single composite storyboard image with six equally sized panels, raw smartphone realism, the same ${fish.name} (${fish.look}), the same prey (${prey.desc}), the same aquarium (${sel.substrate}, ${sel.decor}, ${sel.background}) and the same camera (${sel.camera}) in every panel, no cinematic borders, no cartoon style, no camera-angle change. Frame 1 - 0:00: predator ${sel.fishStart}, prey visible ${sel.preyStart}, open water between them. Frame 2 - 0:02: fish notices the prey, slight body turn toward it. Frame 3 - 0:04: fish aligned and locked on, holding still before the strike. Frame 4 - 0:06: sudden lunge ${sel.strikeDirection}, fish seizes the prey, water disturbed with natural motion blur. Frame 5 - 0:08: ${outcome === "whole" ? "fish swallowing the prey, prey nearly fully inside its mouth" : "fish gripping and repositioning the oversized prey, biting off one portion"}. Frame 6 - 0:10: final feeding result, ${last}, water settling. Add only a small clear timestamp in the corner of each panel and no other text.${customSentence(sel)}`;
 }
 
 /* ================= KATEGORI 2: IKAN KONTES / SHOW =================
@@ -185,7 +194,7 @@ function buildShowPrompt(sel) {
   const fish = sel.fish, t = parseFloat(sel.peakTime);
   const solo = fish.group ? "one small school moving together as a single group, with no stray fish" : "a single fish alone in the tank, with no other fish";
   const body =
-`Create an exactly 10-second vertical 9:16 fictional AI-generated aquarium show-fish video designed to look like a raw modern smartphone recording of a beautiful contest fish inside a clean home show aquarium. The fish is a ${fish.name} with ${fish.look}, shown as ${solo}. The show tank has clear glass, a visible water line, ${sel.water}, ${sel.substrate}, ${sel.decor}, and ${sel.background}, with natural glass reflections and gentle filter bubbles, and it never changes layout or clarity. The camera uses ${sel.camera}, mostly fixed with subtle micro-shake, autofocus breathing, slight sensor noise and natural motion blur only on the fastest fin movement, under ${sel.lighting} that makes its true colors shine. First frame: the fish is ${sel.start}, full body and full fin shape clearly readable, like a contestant being presented to a judge. 0.00-2.00 seconds: the fish holds a beautiful opening pose with fins naturally spread, colors immediately readable. 2.00-4.00 seconds: it begins ${sel.movement}, moving ${sel.direction} with slow elegant body motion and fins flowing smoothly in the water. 4.00-6.00 seconds: it continues the display with a graceful turn, showing its fin shape and color pattern from a new side without any sudden movement. 6.00-8.00 seconds: at about ${t.toFixed(1)} seconds comes the peak display moment, its fins spread at their widest and its colors at their brightest as it holds the most elegant pose of the video. 8.00-10.00 seconds: it glides slowly into a final centered beauty pose, fins still flowing, and the video ends on that pose with a hard cut. Keep the species, color pattern, fin shape and body size constant for the whole video, with realistic fin flow, water resistance, turning and shadows and no clipping through glass or decor. Audio is only natural aquarium sound: ${sel.sound}, with no music, no narration and no voice-over. No feeding, no prey, no cinematic style, no camera cuts, no angle changes, no zoom, no slow motion, no subtitles, no text, no watermark, no extra fish, no duplicate fish, no deformed or torn fins, no changing colors or pattern, no changing aquarium, no dirty or cloudy water, no cartoon style, no glossy ad look and no obvious AI errors.`;
+`Create an exactly 10-second vertical 9:16 fictional AI-generated aquarium show-fish video designed to look like a raw modern smartphone recording of a beautiful contest fish inside a clean home show aquarium. The fish is a ${fish.name} with ${fish.look}, shown as ${solo}. The show tank has clear glass, a visible water line, ${sel.water}, ${sel.substrate}, ${sel.decor}, and ${sel.background}, with natural glass reflections and gentle filter bubbles, and it never changes layout or clarity. The camera uses ${sel.camera}, mostly fixed with subtle micro-shake, autofocus breathing, slight sensor noise and natural motion blur only on the fastest fin movement, under ${sel.lighting} that makes its true colors shine. First frame: the fish is ${sel.start}, full body and full fin shape clearly readable, like a contestant being presented to a judge. 0.00-2.00 seconds: the fish holds a beautiful opening pose with fins naturally spread, colors immediately readable. 2.00-4.00 seconds: it begins ${sel.movement}, moving ${sel.direction} with slow elegant body motion and fins flowing smoothly in the water. 4.00-6.00 seconds: it continues the display with a graceful turn, showing its fin shape and color pattern from a new side without any sudden movement. 6.00-8.00 seconds: at about ${t.toFixed(1)} seconds comes the peak display moment, its fins spread at their widest and its colors at their brightest as it holds the most elegant pose of the video. 8.00-10.00 seconds: it glides slowly into a final centered beauty pose, fins still flowing, and the video ends on that pose with a hard cut. Keep the species, color pattern, fin shape and body size constant for the whole video, with realistic fin flow, water resistance, turning and shadows and no clipping through glass or decor. Audio is only natural aquarium sound: ${sel.sound}, with no music, no narration and no voice-over.${customSentence(sel)} No feeding, no prey, no cinematic style, no camera cuts, no angle changes, no zoom, no slow motion, no subtitles, no text, no watermark, no extra fish, no duplicate fish, no deformed or torn fins, no changing colors or pattern, no changing aquarium, no dirty or cloudy water, no cartoon style, no glossy ad look and no obvious AI errors.`;
   const title = fish.group ? `This Tiny School Moves as One` : pick(SHOW_TITLES)(fish.short);
   const caption = `The ${fish.short.toLowerCase()} takes its time showing off every color and fin. Watch the peak display near the end.`;
   return { body, title, caption, chars: body.length };
@@ -199,10 +208,11 @@ function buildShowIdea(sel) {
     tank: `${sel.water.charAt(0).toUpperCase() + sel.water.slice(1)}, ${sel.substrate}, ${sel.decor}, ${sel.background}; lighting: ${sel.lighting}; camera: ${sel.camera}.`,
     action: `Fish opens ${sel.start}, then performs ${sel.movement} moving ${sel.direction}; peak fin-and-color display at about ${sel.peakTime} seconds, ending in a centered beauty pose.`,
     hook: "Slow royal movement plus one peak fin display makes viewers replay it just to watch the fins flow again.",
+    custom: cleanCustom(sel.custom),
   };
 }
 function showIdeaToText(idea, n) {
-  return `${n}. ${idea.heading}\nFish: ${idea.fish}\nTank: ${idea.tank}\n10-second elegant action: ${idea.action}\nViral hook: ${idea.hook}`;
+  return `${n}. ${idea.heading}\nFish: ${idea.fish}\nTank: ${idea.tank}\n10-second elegant action: ${idea.action}\nViral hook: ${idea.hook}${idea.custom ? `\nSpecial request: ${idea.custom}` : ""}`;
 }
 function buildShowBatch10(rng) {
   const fishes = shuffle(SHOW_FISH, rng).slice(0, 10);
@@ -218,7 +228,7 @@ function buildShowBatch10(rng) {
 }
 function buildShowStoryboard(sel) {
   const fish = sel.fish;
-  return `Create one single composite storyboard image with six equally sized panels, raw smartphone realism, the same ${fish.name} (${fish.look}), the same show tank (${sel.substrate}, ${sel.decor}, ${sel.background}) and the same camera (${sel.camera}) in every panel, no cinematic borders, no cartoon style, no camera-angle change. Frame 1 - 0:00: fish ${sel.start}, full body and fins readable in an opening contest pose. Frame 2 - 0:02: fish begins ${sel.movement}, moving ${sel.direction}. Frame 3 - 0:04: graceful turn showing fin shape and colors from a new side. Frame 4 - 0:06: peak display moment, fins spread at their widest, colors at their brightest. Frame 5 - 0:08: fish gliding slowly out of the display, fins still flowing. Frame 6 - 0:10: final centered beauty pose, fins spread, hard end frame. Add only a small clear timestamp in the corner of each panel and no other text.`;
+  return `Create one single composite storyboard image with six equally sized panels, raw smartphone realism, the same ${fish.name} (${fish.look}), the same show tank (${sel.substrate}, ${sel.decor}, ${sel.background}) and the same camera (${sel.camera}) in every panel, no cinematic borders, no cartoon style, no camera-angle change. Frame 1 - 0:00: fish ${sel.start}, full body and fins readable in an opening contest pose. Frame 2 - 0:02: fish begins ${sel.movement}, moving ${sel.direction}. Frame 3 - 0:04: graceful turn showing fin shape and colors from a new side. Frame 4 - 0:06: peak display moment, fins spread at their widest, colors at their brightest. Frame 5 - 0:08: fish gliding slowly out of the display, fins still flowing. Frame 6 - 0:10: final centered beauty pose, fins spread, hard end frame. Add only a small clear timestamp in the corner of each panel and no other text.${customSentence(sel)}`;
 }
 
 /* ---------- Browser UI ---------- */
@@ -244,6 +254,7 @@ if (typeof document !== "undefined") {
       preyStart: OPTIONS.preyStart[+$("preyStart").value], strikeDirection: OPTIONS.strikeDirection[+$("strikeDirection").value],
       strikeTime: OPTIONS.strikeTime[+$("strikeTime").value], lighting: OPTIONS.lighting[+$("lighting").value],
       sound: OPTIONS.sound[+$("sound").value], outcome: $("outcome").value,
+      custom: $("customRequest").value,
     });
     const getShowSel = () => ({
       fish: SHOW_FISH[+$("showFish").value],
@@ -253,6 +264,7 @@ if (typeof document !== "undefined") {
       direction: SHOW_OPTIONS.direction[+$("showDirection").value], movement: SHOW_OPTIONS.movement[+$("showMovement").value],
       peakTime: SHOW_OPTIONS.peakTime[+$("showPeakTime").value], lighting: SHOW_OPTIONS.lighting[+$("showLighting").value],
       sound: SHOW_OPTIONS.sound[+$("showSound").value],
+      custom: $("customRequest").value,
     });
     const category = () => document.querySelector("input[name=category]:checked").value;
     function applyCategory() {
@@ -293,8 +305,10 @@ if (typeof document !== "undefined") {
       activateTab("tabIdea");
     };
     $("btnBatch").onclick = () => {
-      if (category() === "show") { show("outBatch", "Here are 10 fresh aquarium show-fish video ideas:\n\n" + buildShowBatch10().map((idea, i) => showIdeaToText(idea, i + 1)).join("\n\n")); }
-      else { show("outBatch", "Here are 10 fresh aquarium predator-fish feeding video ideas:\n\n" + buildBatch10().map((idea, i) => ideaToText(idea, i + 1)).join("\n\n")); }
+      const custom = cleanCustom($("customRequest").value);
+      const note = custom ? `\n\nCatatan request khusus (berlaku untuk semua ide di atas): ${custom}` : "";
+      if (category() === "show") { show("outBatch", "Here are 10 fresh aquarium show-fish video ideas:\n\n" + buildShowBatch10().map((idea, i) => showIdeaToText(idea, i + 1)).join("\n\n") + note); }
+      else { show("outBatch", "Here are 10 fresh aquarium predator-fish feeding video ideas:\n\n" + buildBatch10().map((idea, i) => ideaToText(idea, i + 1)).join("\n\n") + note); }
       activateTab("tabBatch");
     };
     $("btnStoryboard").onclick = () => {
@@ -317,4 +331,4 @@ if (typeof document !== "undefined") {
     applyCategory(); randomize(); $("btnPrompt").click();
   });
 }
-if (typeof module !== "undefined") { module.exports = { FISH, PREY, OPTIONS, buildPrompt, buildIdea, buildBatch10, buildStoryboard, resolveOutcome, SHOW_FISH, SHOW_OPTIONS, buildShowPrompt, buildShowIdea, buildShowBatch10, buildShowStoryboard }; }
+if (typeof module !== "undefined") { module.exports = { FISH, PREY, OPTIONS, buildPrompt, buildIdea, buildBatch10, buildStoryboard, resolveOutcome, SHOW_FISH, SHOW_OPTIONS, buildShowPrompt, buildShowIdea, buildShowBatch10, buildShowStoryboard, cleanCustom, customSentence }; }
