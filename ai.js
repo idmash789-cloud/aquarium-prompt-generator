@@ -38,6 +38,18 @@ const AI_PROVIDERS = {
     models: ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"],
     keyHint: "AIza...",
   },
+  router9: {
+    label: "9Router (lokal — AI via router di komputermu)",
+    // 9Router (github.com/decolua/9router) exposes an OpenAI-compatible
+    // endpoint on the user's own machine: default http://localhost:20128/v1
+    // (Docker/production) or http://localhost:20127/v1 (dev). The port can
+    // be changed in the Base URL field. Model names must match the user's
+    // 9Router dashboard exactly (provider/model or a combo name).
+    base: "http://localhost:20128/v1",
+    kind: "openai",
+    models: ["kr/claude-sonnet-4.5", "cc/claude-sonnet-4.5", "kiro/claude-sonnet-4.5", "deepseek/deepseek-chat"],
+    keyHint: "API key dari dashboard 9Router (menu Endpoint & Key)",
+  },
   custom: {
     label: "Custom (OpenAI-compatible: DeepSeek, Together, LM Studio, dll)",
     base: "",

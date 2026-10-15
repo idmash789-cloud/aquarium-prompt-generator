@@ -52,6 +52,7 @@
             <option value="openrouter">OpenRouter (banyak model, 1 key)</option>
             <option value="groq">Groq (cepat)</option>
             <option value="gemini">Google Gemini</option>
+            <option value="router9">9Router (lokal — AI via router di komputermu)</option>
             <option value="custom">Custom (OpenAI-compatible)</option>
           </select>
         </label>
@@ -59,7 +60,7 @@
           <input id="aiModel" list="aiModelList" placeholder="gpt-4o-mini">
           <datalist id="aiModelList"></datalist>
         </label>
-        <label id="aiBaseWrap" style="display:none">Base URL (untuk Custom)
+        <label id="aiBaseWrap" style="display:none">Base URL (Custom / 9Router)
           <input id="aiBaseUrl" placeholder="https://api.deepseek.com/v1">
         </label>
         <label>API key kamu
@@ -67,6 +68,7 @@
         </label>
       </div>
       <p class="note">🔒 API key <strong>hanya tersimpan di browser ini</strong> (localStorage perangkatmu) dan dikirim langsung dari browsermu ke provider AI — tidak masuk kode, tidak masuk repo, dan tidak dilihat siapa pun. Karena situs ini publik, setiap pengunjung memakai API key-nya sendiri (sistem BYOK). Biaya pemakaian AI ditagih provider ke akun API key yang dipakai. <span id="aiStatus"></span></p>
+      <p class="note" id="aiRouterNote" style="display:none">🛜 <strong>Mode 9Router:</strong> 9Router harus sedang berjalan di komputer yang sama dengan browser ini (default <code>http://localhost:20128/v1</code>, mode dev <code>http://localhost:20127/v1</code> — sesuaikan di kolom Base URL). API key &amp; nama model/combo disalin persis dari dashboard 9Router (menu <em>Endpoint &amp; Key</em>). Catatan: kalau aplikasi ini kamu buka dari alamat HTTPS (GitHub Pages), browser bisa memblokir panggilan ke <code>http://localhost</code> — cara paling lancar: buka aplikasi ini secara lokal di komputer yang sama (dari file/zip), atau arahkan Base URL ke alamat HTTPS 9Router-mu (mis. tunnel Cloudflare/Tailscale).</p>
     </div>
     <h2>2. Pilih-pilih bahannya</h2>
     <div class="grid" id="predatorFields">

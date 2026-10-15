@@ -553,7 +553,15 @@ if (typeof document !== "undefined") {
       p.models.forEach(m => { const o = document.createElement("option"); o.value = m; list.appendChild(o); });
       if (!p.models.includes($("aiModel").value.trim())) $("aiModel").value = p.models[0];
       $("aiKey").placeholder = p.keyHint || "API key";
-      $("aiBaseWrap").style.display = $("aiProvider").value === "custom" ? "" : "none";
+      const prov = $("aiProvider").value;
+      $("aiBaseWrap").style.display = (prov === "custom" || prov === "router9") ? "" : "none";
+      if (prov === "router9") {
+        $("aiBaseUrl").placeholder = "http://localhost:20128/v1 (atau 20127, atau URL tunnel HTTPS-mu)";
+        const note = $("aiRouterNote"); if (note) note.style.display = "";
+      } else {
+        $("aiBaseUrl").placeholder = "https://api.deepseek.com/v1";
+        const note = $("aiRouterNote"); if (note) note.style.display = "none";
+      }
       aiSave();
     }
     function applyAiMode() { $("aiSettings").style.display = aiEnabled() ? "" : "none"; }

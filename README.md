@@ -35,9 +35,22 @@ Mode AI memakai sistem **Bring Your Own Key**: setiap pengunjung memasukkan
 API key-nya sendiri di panel AI pada situs. Key hanya tersimpan di
 `localStorage` browser pengunjung dan dikirim langsung dari browser ke
 provider — **tidak pernah masuk kode/repo**. Provider yang didukung:
-OpenAI, OpenRouter, Groq, Google Gemini, dan endpoint Custom yang kompatibel
-OpenAI (mis. DeepSeek). Biaya AI ditagih provider ke pemilik key.
-Jangan pernah commit API key ke repo ini.
+OpenAI, OpenRouter, Groq, Google Gemini, **9Router**, dan endpoint Custom
+yang kompatibel OpenAI (mis. DeepSeek). Biaya AI ditagih provider ke
+pemilik key (untuk 9Router: ke akun/provider yang diatur di dashboard
+9Router user sendiri). Jangan pernah commit API key ke repo ini.
+
+### 9Router
+9Router (github.com/decolua/9router) adalah router AI yang berjalan di
+komputer user sendiri dan membuka endpoint kompatibel OpenAI di
+`http://localhost:20128/v1` (mode dev: `http://localhost:20127/v1`).
+Pilih provider **9Router** di panel AI, salin API key & nama model/combo
+persis dari dashboard 9Router (menu Endpoint & Key), dan sesuaikan Base URL
+kalau port-nya berbeda. Syarat: 9Router harus berjalan di komputer yang
+sama dengan browser. Kalau aplikasi dibuka dari alamat HTTPS (GitHub
+Pages), browser dapat memblokir panggilan ke `http://localhost` — jalan
+keluarnya: buka aplikasi secara lokal di komputer yang sama, atau pakai
+URL tunnel HTTPS (Cloudflare Tunnel/Tailscale) sebagai Base URL.
 
 3. **Umum / General** — kerangka master prompt umum untuk ide video APA SAJA.
    User menulis idenya bebas (subjek, aksi inti, hasil puncak/bentuk akhir),
