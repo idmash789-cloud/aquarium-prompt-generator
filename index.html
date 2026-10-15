@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aquarium Predator Prompt Generator — Channa vs Feeder Prey</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>🐟 Aquarium Predator Prompt Generator</h1>
+  <p>Channa / Predator Fish vs Feeder Prey — pilih-pilih bahannya, prompt video siap copy langsung jadi. Khusus video feeding akuarium fiksi AI, gaya raw smartphone.</p>
+  <div class="locks">
+    <span>🔒 10 detik</span><span>🔒 Vertikal 9:16</span><span>🔒 Raw smartphone</span>
+    <span>🔒 1 kamera tetap</span><span>🔒 Tanpa musik / narasi</span><span>🔒 Non-graphic</span><span>🔒 Negative lock otomatis</span>
+  </div>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>1. Pilih-pilih bahannya</h2>
+    <div class="grid">
+      <label>Ikan predator
+        <select id="fish"></select>
+      </label>
+      <label>Prey / umpan hidup
+        <select id="prey"></select>
+      </label>
+      <label>Dasar akuarium (substrate)
+        <select id="substrate"></select>
+      </label>
+      <label>Dekorasi tank
+        <select id="decor"></select>
+      </label>
+      <label>Background tank
+        <select id="background"></select>
+      </label>
+      <label>Warna / kejernihan air
+        <select id="water"></select>
+      </label>
+      <label>Angle kamera HP
+        <select id="camera"></select>
+      </label>
+      <label>Posisi awal ikan
+        <select id="fishStart"></select>
+      </label>
+      <label>Posisi awal prey
+        <select id="preyStart"></select>
+      </label>
+      <label>Arah strike / serangan
+        <select id="strikeDirection"></select>
+      </label>
+      <label>Strike di detik ke-
+        <select id="strikeTime"></select>
+      </label>
+      <label>Pencahayaan
+        <select id="lighting"></select>
+      </label>
+      <label>Penekanan suara alami
+        <select id="sound"></select>
+      </label>
+      <label>Hasil akhir (outcome)
+        <select id="outcome">
+          <option value="auto">Auto — ikut ukuran prey (prey besar = potong sebagian)</option>
+          <option value="whole">Telan utuh</option>
+          <option value="portion">Potong sebagian saja</option>
+        </select>
+      </label>
+    </div>
+    <div class="actions">
+      <button id="btnRandom" class="secondary">🎲 Acak Semua</button>
+      <button id="btnPrompt">⚡ Buat Prompt Video</button>
+      <button id="btnIdea" class="secondary">💡 Buat 1 Ide Topik</button>
+      <button id="btnBatch" class="secondary">🔟 Buat 10 Ide Unik</button>
+      <button id="btnStoryboard" class="secondary">🎬 Buat Prompt Storyboard 6 Frame</button>
+    </div>
+    <p class="note">Aturan permanen dari Ultra Master Prompt otomatis terkunci di setiap hasil: struktur timing 0–2 / 2–4 / 4–6 / 6–8 / 8–10 detik, fisika &amp; anatomi realistis, akuarium stabil, prey besar tidak ditelan utuh secara mustahil, dan negative prompt lengkap di akhir. Tikus kecil hanya dipakai kalau kamu pilih sendiri.</p>
+  </section>
+
+  <section class="panel">
+    <h2>2. Hasil — siap copy</h2>
+    <div class="tabs">
+      <button class="tabbtn active" data-tab="tabPrompt">Prompt Video</button>
+      <button class="tabbtn" data-tab="tabIdea">Ide Topik</button>
+      <button class="tabbtn" data-tab="tabBatch">10 Ide</button>
+      <button class="tabbtn" data-tab="tabStoryboard">Storyboard</button>
+    </div>
+
+    <div id="tabPrompt" class="tabpane active">
+      <p id="promptMeta" class="meta"></p>
+      <pre id="outPrompt" class="output"></pre>
+      <button data-copy="outPrompt">Copy</button>
+    </div>
+    <div id="tabIdea" class="tabpane">
+      <pre id="outIdea" class="output"></pre>
+      <button data-copy="outIdea">Copy</button>
+    </div>
+    <div id="tabBatch" class="tabpane">
+      <pre id="outBatch" class="output"></pre>
+      <button data-copy="outBatch">Copy</button>
+    </div>
+    <div id="tabStoryboard" class="tabpane">
+      <pre id="outStoryboard" class="output"></pre>
+      <button data-copy="outStoryboard">Copy</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Semua adegan adalah fiksi dan dibuat dengan AI — tidak ada hewan asli yang dipakai atau dilukai. Prompt berbahasa Inggris untuk hasil terbaik di generator video AI (Flow / Veo dan sejenisnya), ditujukan untuk audiens TikTok / Reels / Shorts.</p>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
