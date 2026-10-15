@@ -19,6 +19,25 @@ Ada juga kolom **Request khusus (opsional)**: teks bebas (maks 300 karakter)
 yang disisipkan ke hasil sebagai "Special request" — untuk permintaan di luar
 pilihan yang tersedia, di kedua kategori dan semua mode output.
 
+## Mode penulisan: Template vs AI Fresh
+- **Template** (default): gratis, instan, hasil digabung dari pilihan user
+  memakai kerangka master prompt. Pilihan sama = hasil sama.
+- **AI Fresh**: hasil template dikirim sebagai *spesifikasi terkunci* ke AI,
+  lalu AI menulis ulang dengan kata-kata fresh setiap Generate — semua fakta
+  & lock (timing 0–10 dtk, 9:16, raw smartphone, negative lock, aturan prey
+  besar / no-feeding) wajib dipertahankan, dan aplikasi memvalidasi hasil AI
+  (segmen timing, negative lock, jumlah frame/ide). Kalau validasi gagal atau
+  API error, aplikasi memberi peringatan dan menampilkan hasil template.
+
+### API key (BYOK)
+Mode AI memakai sistem **Bring Your Own Key**: setiap pengunjung memasukkan
+API key-nya sendiri di panel AI pada situs. Key hanya tersimpan di
+`localStorage` browser pengunjung dan dikirim langsung dari browser ke
+provider — **tidak pernah masuk kode/repo**. Provider yang didukung:
+OpenAI, OpenRouter, Groq, Google Gemini, dan endpoint Custom yang kompatibel
+OpenAI (mis. DeepSeek). Biaya AI ditagih provider ke pemilik key.
+Jangan pernah commit API key ke repo ini.
+
 ## Cara pakai
 1. Buka `index.html` (atau hosting folder ini di GitHub Pages).
 2. Pilih kategori di bagian atas: **Predator** atau **Kontes / Show**.

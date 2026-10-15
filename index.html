@@ -29,6 +29,41 @@
         <span>🏆 <strong>Kontes / Show</strong><br><small>Ikan hias bergerak elegan, pamer sirip &amp; warna</small></span>
       </label>
     </div>
+    <h2>Mode penulisan prompt</h2>
+    <div class="catpick">
+      <label class="catcard">
+        <input type="radio" name="aimode" value="template" checked>
+        <span>📋 <strong>Template</strong><br><small>Gratis, instan, rumus gabungan pilihanmu</small></span>
+      </label>
+      <label class="catcard">
+        <input type="radio" name="aimode" value="ai">
+        <span>🤖 <strong>AI Fresh</strong><br><small>Ditulis ulang AI tiap Generate — perlu API key sendiri</small></span>
+      </label>
+    </div>
+    <div id="aiSettings" style="display:none">
+      <div class="grid">
+        <label>Provider AI
+          <select id="aiProvider">
+            <option value="openai">OpenAI</option>
+            <option value="openrouter">OpenRouter (banyak model, 1 key)</option>
+            <option value="groq">Groq (cepat)</option>
+            <option value="gemini">Google Gemini</option>
+            <option value="custom">Custom (OpenAI-compatible)</option>
+          </select>
+        </label>
+        <label>Model
+          <input id="aiModel" list="aiModelList" placeholder="gpt-4o-mini">
+          <datalist id="aiModelList"></datalist>
+        </label>
+        <label id="aiBaseWrap" style="display:none">Base URL (untuk Custom)
+          <input id="aiBaseUrl" placeholder="https://api.deepseek.com/v1">
+        </label>
+        <label>API key kamu
+          <input id="aiKey" type="password" autocomplete="off" placeholder="tempel API key di sini">
+        </label>
+      </div>
+      <p class="note">🔒 API key <strong>hanya tersimpan di browser ini</strong> (localStorage perangkatmu) dan dikirim langsung dari browsermu ke provider AI — tidak masuk kode, tidak masuk repo, dan tidak dilihat siapa pun. Karena situs ini publik, setiap pengunjung memakai API key-nya sendiri (sistem BYOK). Biaya pemakaian AI ditagih provider ke akun API key yang dipakai. <span id="aiStatus"></span></p>
+    </div>
     <h2>2. Pilih-pilih bahannya</h2>
     <div class="grid" id="predatorFields">
       <label>Ikan predator
@@ -166,6 +201,7 @@
 <footer>
   <p>Semua adegan adalah fiksi dan dibuat dengan AI — tidak ada hewan asli yang dipakai atau dilukai. Prompt berbahasa Inggris untuk hasil terbaik di generator video AI (Flow / Veo dan sejenisnya), ditujukan untuk audiens TikTok / Reels / Shorts.</p>
 </footer>
+<script src="ai.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -414,33 +414,90 @@ if (typeof document !== "undefined") {
         ["substrate", "decor", "background", "water", "camera", "fishStart", "preyStart", "strikeDirection", "strikeTime", "lighting", "sound"].forEach(k => set(k, OPTIONS[k].length));
       }
     }
+    /* ---------- AI Fresh mode (BYOK) ---------- */
+    const AI = (typeof window !== "undefined" && window.AIFresh) ? window.AIFresh : null;
+    const aiEnabled = () => { const el = document.querySelector("input[name=aimode]:checked"); return !!el && el.value === "ai"; };
+    const aiCfg = () => ({ provider: $("aiProvider").value, apiKey: $("aiKey").value.trim(), model: $("aiModel").value.trim(), baseUrl: $("aiBaseUrl").value.trim() });
+    function aiSave() { try { localStorage.setItem("aqg_ai", JSON.stringify(aiCfg())); } catch (e) { /* storage unavailable */ } }
+    function aiLoad() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("aqg_ai") || "null");
+        if (saved) { $("aiProvider").value = saved.provider || "openai"; $("aiKey").value = saved.apiKey || ""; $("aiModel").value = saved.model || ""; $("aiBaseUrl").value = saved.baseUrl || ""; }
+      } catch (e) { /* ignore */ }
+    }
+    function aiProviderUI() {
+      if (!AI) return;
+      const p = AI.AI_PROVIDERS[$("aiProvider").value] || AI.AI_PROVIDERS.openai;
+      const list = $("aiModelList"); list.innerHTML = "";
+      p.models.forEach(m => { const o = document.createElement("option"); o.value = m; list.appendChild(o); });
+      if (!p.models.includes($("aiModel").value.trim())) $("aiModel").value = p.models[0];
+      $("aiKey").placeholder = p.keyHint || "API key";
+      $("aiBaseWrap").style.display = $("aiProvider").value === "custom" ? "" : "none";
+      aiSave();
+    }
+    function applyAiMode() { $("aiSettings").style.display = aiEnabled() ? "" : "none"; }
+    document.querySelectorAll("input[name=aimode]").forEach(r => r.addEventListener("change", applyAiMode));
+    $("aiProvider").addEventListener("change", aiProviderUI);
+    ["aiKey", "aiModel", "aiBaseUrl"].forEach(id => $(id).addEventListener("change", aiSave));
+    function setBusy(busy) { ["btnPrompt", "btnIdea", "btnBatch", "btnStoryboard", "btnRandom"].forEach(id => { $(id).disabled = busy; }); }
+    async function runAI(kind, cat, specText, applyTemplate, applyAI) {
+      if (!aiEnabled()) { applyTemplate(); return; }
+      if (!AI) { show("aiStatus", "File ai.js tidak termuat — menampilkan hasil template."); applyTemplate(); return; }
+      const cfg = aiCfg();
+      if (!cfg.apiKey) { show("aiStatus", "⚠️ API key belum diisi — menampilkan hasil template dulu. Isi API key di panel Mode AI Fresh, lalu klik Generate lagi."); applyTemplate(); return; }
+      setBusy(true); show("aiStatus", "🤖 AI sedang menulis ulang… tunggu sebentar.");
+      try {
+        const result = await AI.aiGenerate(cfg, kind, cat, specText);
+        applyAI(result);
+        show("aiStatus", result.problems && result.problems.length
+          ? "⚠️ Selesai, tapi hasil AI perlu dicek: " + result.problems.join("; ") + ". Klik Generate lagi untuk versi lain, atau pakai mode Template."
+          : "✅ Selesai ditulis ulang AI (" + cfg.provider + " • " + (cfg.model || "model default") + "). Klik Generate lagi untuk versi fresh lain.");
+      } catch (err) {
+        show("aiStatus", "⚠️ AI gagal: " + (err && err.message ? err.message : err) + " — menampilkan hasil template.");
+        applyTemplate();
+      } finally { setBusy(false); }
+    }
+    /* ---------- Generate buttons ---------- */
     $("btnRandom").onclick = () => { randomize(); $("btnPrompt").click(); };
-    $("btnPrompt").onclick = () => {
-      if (category() === "show") {
+    $("btnPrompt").onclick = async () => {
+      const cat = category();
+      if (cat === "show") {
         const r = buildShowPrompt(getShowSel());
-        show("outPrompt", `${r.body}\n\nTitle: ${r.title}\nCaption: ${r.caption}`);
-        show("promptMeta", `${r.chars} karakter - Kategori: Kontes / Show (tanpa feeding, puncak display sirip & warna)`);
+        const applyTemplate = () => { show("outPrompt", `${r.body}\n\nTitle: ${r.title}\nCaption: ${r.caption}`); show("promptMeta", `${r.chars} karakter - Kategori: Kontes / Show (tanpa feeding, puncak display sirip & warna)`); };
+        await runAI("prompt", cat, r.body, applyTemplate, res => {
+          show("outPrompt", `${res.text}${res.title ? `\n\nTitle: ${res.title}` : ""}${res.caption ? `\nCaption: ${res.caption}` : ""}`);
+          show("promptMeta", `${res.text.length} karakter - Ditulis ulang AI Fresh - Kategori: Kontes / Show`);
+        });
       } else {
         const r = buildPrompt(getSel());
-        show("outPrompt", `${r.body}\n\nTitle: ${r.title}\nCaption: ${r.caption}`);
-        show("promptMeta", `${r.chars} karakter (target master prompt: 1.800-2.600) - Outcome: ${r.outcome === "whole" ? "telan utuh" : "potong sebagian"}`);
+        const applyTemplate = () => { show("outPrompt", `${r.body}\n\nTitle: ${r.title}\nCaption: ${r.caption}`); show("promptMeta", `${r.chars} karakter (target master prompt: 1.800-2.600) - Outcome: ${r.outcome === "whole" ? "telan utuh" : "potong sebagian"}`); };
+        await runAI("prompt", cat, r.body, applyTemplate, res => {
+          show("outPrompt", `${res.text}${res.title ? `\n\nTitle: ${res.title}` : ""}${res.caption ? `\nCaption: ${res.caption}` : ""}`);
+          show("promptMeta", `${res.text.length} karakter - Ditulis ulang AI Fresh`);
+        });
       }
       activateTab("tabPrompt");
     };
-    $("btnIdea").onclick = () => {
-      if (category() === "show") { show("outIdea", showIdeaToText(buildShowIdea(getShowSel()), 1)); }
-      else { show("outIdea", ideaToText(buildIdea(getSel()), 1)); }
+    $("btnIdea").onclick = async () => {
+      const cat = category();
+      const text = cat === "show" ? showIdeaToText(buildShowIdea(getShowSel()), 1) : ideaToText(buildIdea(getSel()), 1);
+      await runAI("idea", cat, text, () => show("outIdea", text), res => show("outIdea", res.text));
       activateTab("tabIdea");
     };
-    $("btnBatch").onclick = () => {
+    $("btnBatch").onclick = async () => {
+      const cat = category();
       const custom = cleanCustom($("customRequest").value);
       const note = custom ? `\n\nCatatan request khusus (berlaku untuk semua ide di atas): ${custom}` : "";
-      if (category() === "show") { show("outBatch", "Here are 10 fresh aquarium show-fish video ideas:\n\n" + buildShowBatch10().map((idea, i) => showIdeaToText(idea, i + 1)).join("\n\n") + note); }
-      else { show("outBatch", "Here are 10 fresh aquarium predator-fish feeding video ideas:\n\n" + buildBatch10().map((idea, i) => ideaToText(idea, i + 1)).join("\n\n") + note); }
+      const text = cat === "show"
+        ? "Here are 10 fresh aquarium show-fish video ideas:\n\n" + buildShowBatch10().map((idea, i) => showIdeaToText(idea, i + 1)).join("\n\n") + note
+        : "Here are 10 fresh aquarium predator-fish feeding video ideas:\n\n" + buildBatch10().map((idea, i) => ideaToText(idea, i + 1)).join("\n\n") + note;
+      await runAI("batch", cat, text, () => show("outBatch", text), res => show("outBatch", res.text));
       activateTab("tabBatch");
     };
-    $("btnStoryboard").onclick = () => {
-      show("outStoryboard", category() === "show" ? buildShowStoryboard(getShowSel()) : buildStoryboard(getSel()));
+    $("btnStoryboard").onclick = async () => {
+      const cat = category();
+      const text = cat === "show" ? buildShowStoryboard(getShowSel()) : buildStoryboard(getSel());
+      await runAI("storyboard", cat, text, () => show("outStoryboard", text), res => show("outStoryboard", res.text));
       activateTab("tabStoryboard");
     };
     document.querySelectorAll("[data-copy]").forEach(btn => {
@@ -456,7 +513,7 @@ if (typeof document !== "undefined") {
       document.querySelectorAll(".tabpane").forEach(p => p.classList.toggle("active", p.id === id));
     };
     document.querySelectorAll(".tabbtn").forEach(b => b.onclick = () => activateTab(b.dataset.tab));
-    applyCategory(); refreshVariants(); randomize(); $("btnPrompt").click();
+    aiLoad(); aiProviderUI(); applyAiMode(); applyCategory(); refreshVariants(); randomize(); $("btnPrompt").click();
   });
 }
 if (typeof module !== "undefined") { module.exports = { FISH, PREY, OPTIONS, buildPrompt, buildIdea, buildBatch10, buildStoryboard, resolveOutcome, SHOW_FISH, SHOW_OPTIONS, buildShowPrompt, buildShowIdea, buildShowBatch10, buildShowStoryboard, cleanCustom, customSentence, resolveShowFish, showDisplay }; }
