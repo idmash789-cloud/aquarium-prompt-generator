@@ -1,7 +1,8 @@
-# Aquarium Prompt Generator — Predator & Kontes/Show
+# Video Prompt Generator — Predator, Kontes/Show & Umum
 
 Web app statis (HTML/CSS/JS, tanpa backend) untuk membuat prompt video AI
-akuarium, dengan **2 kategori**:
+untuk berbagai niche, bisa dipakai banyak orang, dengan **3 kategori** —
+setiap kategori punya master prompt-nya sendiri:
 
 1. **Predator** — Channa / Predator Fish vs Feeder Prey (video feeding),
    berdasarkan Ultra Master Prompt dari Dwi (15 Okt 2026).
@@ -37,6 +38,19 @@ provider — **tidak pernah masuk kode/repo**. Provider yang didukung:
 OpenAI, OpenRouter, Groq, Google Gemini, dan endpoint Custom yang kompatibel
 OpenAI (mis. DeepSeek). Biaya AI ditagih provider ke pemilik key.
 Jangan pernah commit API key ke repo ini.
+
+3. **Umum / General** — kerangka master prompt umum untuk ide video APA SAJA.
+   User menulis idenya bebas (subjek, aksi inti, hasil puncak/bentuk akhir),
+   lalu memilih lokasi, waktu, cuaca, gaya kamera, durasi (5/8/10/15 dtk),
+   rasio (9:16, 16:9, 1:1, 4:5), penonton, momen puncak, suara, dan
+   **alat perekam**: iPhone, HP Android flagship, HP Android biasa,
+   kamera mirrorless/DSLR, action camera, atau handycam jadul — masing-masing
+   dengan ciri realisme rekaman manualnya sendiri (micro-shake, autofocus,
+   exposure, noise sensor). Struktur presisi: setup → kejadian mulai →
+   berkembang → puncak yang harus terbaca jelas → akhir natural, plus kunci
+   fisika nyata & negative prompt. Ada tombol preset contoh
+   "Kembang Api Membentuk Phoenix" (lihat `examples/kembang-api-phoenix.txt`).
+   Mode "10 Ide" di kategori ini = 10 variasi setup perekaman dari ide sama.
 
 ## Cara pakai
 1. Buka `index.html` (atau hosting folder ini di GitHub Pages).

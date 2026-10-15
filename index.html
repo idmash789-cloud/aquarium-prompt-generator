@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aquarium Prompt Generator — Predator & Ikan Kontes/Show</title>
+<title>Video Prompt Generator — Predator, Ikan Kontes & Umum (Semua Ide)</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <h1>🐟 Aquarium Prompt Generator</h1>
-  <p>Dua kategori: <strong>Predator</strong> (Channa / predator fish vs feeder prey, video feeding) dan <strong>Kontes / Show</strong> (ikan hias bergerak elegan memamerkan sirip &amp; warna). Pilih-pilih bahannya, prompt video siap copy langsung jadi. Semua fiksi AI, gaya raw smartphone.</p>
+  <h1>🎬 Video Prompt Generator</h1>
+  <p>Untuk berbagai video &amp; berbagai niche, bisa dipakai siapa saja. Tiga kategori: <strong>Predator</strong> (video feeding akuarium), <strong>Kontes / Show</strong> (ikan hias elegan), dan <strong>Umum</strong> (ide video apa saja — tulis idemu, generator yang menyusun prompt presisinya). Semua bergaya rekaman manual manusia yang realistis.</p>
   <div class="locks">
-    <span>🔒 10 detik</span><span>🔒 Vertikal 9:16</span><span>🔒 Raw smartphone</span>
-    <span>🔒 1 kamera tetap</span><span>🔒 Tanpa musik / narasi</span><span>🔒 Non-graphic</span><span>🔒 Negative lock otomatis</span>
+    <span>🔒 Realisme rekaman manual manusia</span><span>🔒 Fisika nyata</span><span>🔒 Struktur timing presisi</span>
+    <span>🔒 1 kamera konsisten</span><span>🔒 Suara alami saja</span><span>🔒 Negative lock otomatis</span>
   </div>
 </header>
 
@@ -27,6 +27,10 @@
       <label class="catcard">
         <input type="radio" name="category" value="show">
         <span>🏆 <strong>Kontes / Show</strong><br><small>Ikan hias bergerak elegan, pamer sirip &amp; warna</small></span>
+      </label>
+      <label class="catcard">
+        <input type="radio" name="category" value="general">
+        <span>🌍 <strong>Umum / General</strong><br><small>Ide video apa saja — kembang api, alam, produk, momen, dll</small></span>
       </label>
     </div>
     <h2>Mode penulisan prompt</h2>
@@ -154,6 +158,54 @@
         <select id="showSound"></select>
       </label>
     </div>
+    <div id="generalFields" style="display:none">
+      <button type="button" id="genPreset" class="secondary">🎆 Isi Contoh: Kembang Api Membentuk Phoenix</button>
+      <label class="custombox">Ide video kamu (tulis bebas — inti videonya mau seperti apa)
+        <textarea id="genIdea" rows="3" placeholder="Contoh: kembang api dinyalakan, meledak di langit membentuk burung phoenix"></textarea>
+      </label>
+      <div class="grid">
+        <label>Subjek utama (opsional, perjelas ide)
+          <input id="genSubject" placeholder="cth: satu kembang api besar profesional">
+        </label>
+        <label>Aksi / kejadian inti (opsional)
+          <input id="genAction" placeholder="cth: meluncur naik lalu meledak di puncak langit">
+        </label>
+        <label>Hasil puncak / bentuk akhir (opsional)
+          <input id="genFinal" placeholder="cth: siluet phoenix bersayap lebar dari percikan emas">
+        </label>
+        <label>Alat perekam (gaya rekaman manual)
+          <select id="genDevice"></select>
+        </label>
+        <label>Lokasi / latar
+          <select id="genLocation"></select>
+        </label>
+        <label>Waktu
+          <select id="genTime"></select>
+        </label>
+        <label>Cuaca / kondisi langit
+          <select id="genWeather"></select>
+        </label>
+        <label>Gaya kamera
+          <select id="genCamera"></select>
+        </label>
+        <label>Durasi (detik)
+          <select id="genDuration"></select>
+        </label>
+        <label>Rasio video
+          <select id="genRatio"></select>
+        </label>
+        <label>Orang / penonton di frame
+          <select id="genCrowd"></select>
+        </label>
+        <label>Momen puncak di sekitar (% durasi)
+          <select id="genPeak"></select>
+        </label>
+        <label>Suara alami
+          <select id="genAudio"></select>
+        </label>
+      </div>
+      <p class="note">Tulis ide dalam Bahasa Inggris untuk presisi paling tinggi di generator video. Bahasa Indonesia tetap bisa — atau aktifkan mode <strong>AI Fresh</strong>, AI akan menerjemahkan &amp; merapikannya otomatis ke dalam prompt.</p>
+    </div>
     <label class="custombox">Request khusus (opsional) — tulis manual kalau ada permintaan di luar pilihan di atas
       <textarea id="customRequest" rows="2" maxlength="300" placeholder="Contoh: the fish must face the camera at the end • extra bubbles near the surface • no human hands visible"></textarea>
     </label>
@@ -167,6 +219,7 @@
     </div>
     <p class="note" id="predatorNote">Aturan permanen dari Ultra Master Prompt otomatis terkunci di setiap hasil: struktur timing 0–2 / 2–4 / 4–6 / 6–8 / 8–10 detik, fisika &amp; anatomi realistis, akuarium stabil, prey besar tidak ditelan utuh secara mustahil, dan negative prompt lengkap di akhir. Tikus kecil hanya dipakai kalau kamu pilih sendiri.</p>
     <p class="note" id="showNote" style="display:none">Kategori Kontes / Show terkunci: 10 detik 9:16 raw smartphone, tank show bersih &amp; stabil, 1 ikan saja (kecuali ikan schooling), tanpa feeding &amp; tanpa prey — klimaksnya adalah momen display sirip &amp; warna di detik yang kamu pilih, ditutup pose cantik di tengah frame. Negative prompt lengkap otomatis di akhir.</p>
+    <p class="note" id="generalNote" style="display:none">Kategori Umum memakai master prompt umum: idemu dibungkus struktur presisi — setup → kejadian mulai → berkembang → momen puncak yang harus terbaca jelas → akhir natural — plus kunci realisme rekaman manual (fisika nyata, goyangan tangan wajar, autofocus &amp; exposure bereaksi natural, suara alami saja) dan negative prompt lengkap. Mode "10 Ide" di kategori ini menghasilkan 10 variasi setup perekaman dari ide yang sama.</p>
   </section>
 
   <section class="panel">

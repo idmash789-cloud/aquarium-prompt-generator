@@ -347,6 +347,101 @@ function buildShowStoryboard(sel) {
   return `Create one single composite storyboard image with six equally sized panels, raw smartphone realism, the same ${showDisplay(fish)} (${fish.look}), the same show tank (${sel.substrate}, ${sel.decor}, ${sel.background}) and the same camera (${sel.camera}) in every panel, no cinematic borders, no cartoon style, no camera-angle change. Frame 1 - 0:00: fish ${sel.start}, full body and fins readable in an opening contest pose. Frame 2 - 0:02: fish begins ${sel.movement}, moving ${sel.direction}. Frame 3 - 0:04: graceful turn showing fin shape and colors from a new side. Frame 4 - 0:06: peak display moment, fins spread at their widest, colors at their brightest. Frame 5 - 0:08: fish gliding slowly out of the display, fins still flowing. Frame 6 - 0:10: final centered beauty pose, fins spread, hard end frame. Add only a small clear timestamp in the corner of each panel and no other text.${customSentence(sel)}`;
 }
 
+/* ================= KATEGORI 3: UMUM / GENERAL =================
+   Added 2026-10-15 (evening) at Dwi's request: the app is for MANY video
+   niches and many users. Each special category carries its own master
+   prompt; this General category is the catch-all master framework for ANY
+   idea the user types (example: a firework that explodes into a phoenix).
+   Locked for every idea: realistic physics, one continuous manual human
+   recording on a chosen device (iPhone / Android / camera / etc.), natural
+   imperfections of a real recording, natural audio, negative lock. */
+
+const GEN_DEVICES = [
+  { name: "iPhone (modern)", desc: "recorded on a modern iPhone held in one hand, with sharp detail, natural color science, slight handheld micro-shake, autofocus hunting in low light and natural exposure blooming on bright flashes" },
+  { name: "HP Android flagship (Samsung / Pixel)", desc: "recorded on a flagship Android phone, with vivid yet natural colors, slight handheld micro-shake, quick autofocus locks and natural exposure adjustments" },
+  { name: "HP Android biasa (kelas menengah)", desc: "recorded on an ordinary mid-range Android phone, with mild sensor noise in dark areas, slightly softer detail, small autofocus delays and natural compression softness" },
+  { name: "Kamera mirrorless / DSLR", desc: "recorded on a mirrorless camera with a standard kit lens, with clean low-noise detail, gentle natural background softness, smooth manual focus behavior and steady two-hand holding" },
+  { name: "Action camera (GoPro)", desc: "recorded on a wide-angle action camera, with a wide field of view, slight edge distortion, very stable motion and bright punchy colors" },
+  { name: "Handycam / HP jadul (nuansa nostalgia)", desc: "recorded on an old handycam-style device, with softer focus, mild grain, slightly washed colors and charming imperfect exposure" },
+];
+
+const GEN_OPTIONS = {
+  location: ["an open festival area with a city skyline in the background", "a beach shoreline with the sea in the background", "an open field in a small town", "the backyard of a house in a quiet neighborhood", "a lakeside with calm water reflections", "a mountain viewpoint overlooking a valley", "a large stadium / event venue", "a rooftop overlooking the city"],
+  timeOfDay: ["at midnight", "at night", "during golden-hour sunset", "in bright daylight", "in the early morning", "during the late-evening blue hour"],
+  weather: ["a clear sky with no clouds", "a few thin clouds in the sky", "thin mist in the air", "wet ground with reflections after rain", "a slightly hazy sky"],
+  cameraStyle: ["handheld by a real person with natural micro-shake and small reframing adjustments", "on a tripod, steady, with tiny manual pans only", "in first-person POV, as if the viewer is the one holding the device", "static from a distance, with one slow manual pan to follow the action"],
+  duration: ["5", "8", "10", "15"],
+  ratio: ["9:16 vertical", "16:9 horizontal", "1:1 square", "4:5 vertical"],
+  crowd: ["no people visible, only the scene itself", "a few spectators visible from behind at the bottom edge of the frame", "a lively festival crowd visible from behind", "nobody else visible; only the person filming is implied off-camera"],
+  peak: ["50", "60", "70"],
+  audio: ["natural location ambience and the real sounds of the event, including soft distant crowd reactions", "natural location ambience only, calm and realistic", "cheerful crowd cheers and gasps at the peak moment", "very quiet natural ambience with subtle wind"],
+};
+
+function genFmt(n) { return n.toFixed(2); }
+function genSegments(duration) {
+  const d = parseFloat(duration);
+  const b = [0, 0.2 * d, 0.45 * d, 0.7 * d, d];
+  return b.slice(0, 4).map((s, i) => `${genFmt(s)}-${genFmt(b[i + 1])} seconds`);
+}
+function genOrientation(ratio) {
+  if (ratio.startsWith("16:9")) return "horizontal";
+  if (ratio.startsWith("1:1")) return "square";
+  return "vertical";
+}
+
+function buildGeneralPrompt(sel) {
+  const d = parseFloat(sel.duration), segs = genSegments(sel.duration);
+  const peakSec = (d * parseFloat(sel.peak) / 100).toFixed(1);
+  const idea = (sel.idea || "").trim() || "a striking real-life style moment";
+  const subject = (sel.subject || "").trim() || "the main subject of the idea";
+  const action = (sel.action || "").trim() || idea;
+  const finalForm = (sel.fin || "").trim() || "the main event reaches its clearest, most readable and most satisfying result";
+  const body =
+`Create an exactly ${d}-second ${genOrientation(sel.ratio)} ${sel.ratio.split(" ")[0]} fictional AI-generated video designed to look like a completely real video ${sel.device.desc}. The scene takes place at ${sel.location} ${sel.timeOfDay}, with ${sel.weather}. The video idea is: ${idea}. Main subject: ${subject}. The camera is ${sel.cameraStyle}. In the first frame the location, the subject and the situation are immediately clear, framed the way a real person would frame it, with ${sel.crowd}. ${segs[0]}: the setup is established, the subject is in position, and anticipation builds naturally. ${segs[1]}: the core event begins — ${action} — with realistic speed, weight and physics, while the camera reacts with tiny natural adjustments. ${segs[2]}: the event develops and builds toward the peak moment at about ${peakSec} seconds; the key visual change grows more and more readable and the framing follows it naturally. ${segs[3]}: the peak result — ${finalForm} — is fully formed and held clearly readable long enough for any viewer to recognize it, followed by a natural ending as the moment settles, with a hard cut. Throughout, keep the subject's identity, size, colors and shape constant except for the one described event, and obey real-world physics: gravity, momentum, smoke and particle drift, light spill and correct shadows. Keep the honest imperfections of a real manual recording: micro-shake, focus breathing, auto-exposure reacting to bright moments, realistic sensor behavior, and no over-polished CGI look. Audio is only natural sound recorded by the device microphone: ${sel.audio}, with no added music, no narration and no voice-over.${customSentence(sel)} No cartoon look, no animation look, no video-game CGI look, no studio lighting, no camera cuts, no camera-angle changes, no impossible physics, no morphing except the one described event, no duplicated subjects, no changing location, no subtitles, no text overlays, no watermark, no glossy commercial look and no obvious AI-generated artifacts.`;
+  const titles = ["You Have to Watch Until the End", "Wait for the Peak Moment", "Caught at Exactly the Right Second", "The Ending Nobody Expected"];
+  const title = sel.fin ? "Wait Until You See What It Becomes" : pick(titles);
+  const caption = "It looks like a real moment someone caught by hand. Watch what happens at the peak.";
+  return { body, title, caption, chars: body.length, peakSec };
+}
+
+function buildGeneralIdea(sel) {
+  const d = parseFloat(sel.duration);
+  return {
+    heading: (sel.idea || "Video concept").trim().slice(0, 80),
+    concept: (sel.idea || "").trim(),
+    subject: (sel.subject || "").trim() || "-",
+    action: (sel.action || "").trim() || "-",
+    fin: (sel.fin || "").trim() || "-",
+    setting: `${sel.location} ${sel.timeOfDay}, ${sel.weather}; crowd: ${sel.crowd}`,
+    device: `${sel.device.name} — ${sel.cameraStyle}`,
+    timeline: `${d} seconds, ratio ${sel.ratio}; setup, event begins, develops, peak at about ${(d * parseFloat(sel.peak) / 100).toFixed(1)}s, natural ending.`,
+    hook: "It feels like a genuine moment caught by a real person, and the peak result is clear enough to make viewers replay it.",
+    custom: cleanCustom(sel.custom),
+  };
+}
+function generalIdeaToText(idea, n) {
+  return `${n}. ${idea.heading}\nConcept: ${idea.concept}\nSubject: ${idea.subject}\nCore event: ${idea.action}\nPeak result: ${idea.fin}\nSetting: ${idea.setting}\nRecording style: ${idea.device}\nTimeline: ${idea.timeline}\nViral hook: ${idea.hook}${idea.custom ? `\nSpecial request: ${idea.custom}` : ""}`;
+}
+function buildGeneralBatch(baseSel, rng) {
+  const combos = [];
+  const seen = new Set();
+  let guard = 0;
+  while (combos.length < 10 && guard++ < 300) {
+    const sel = { ...baseSel,
+      location: pick(GEN_OPTIONS.location, rng), timeOfDay: pick(GEN_OPTIONS.timeOfDay, rng),
+      weather: pick(GEN_OPTIONS.weather, rng), crowd: pick(GEN_OPTIONS.crowd, rng),
+      device: pick(GEN_DEVICES, rng), cameraStyle: pick(GEN_OPTIONS.cameraStyle, rng) };
+    const key = [sel.location, sel.timeOfDay, sel.device.name, sel.crowd].join("|");
+    if (seen.has(key)) continue;
+    seen.add(key); combos.push(buildGeneralIdea(sel));
+  }
+  return combos;
+}
+function buildGeneralStoryboard(sel) {
+  const r = buildGeneralPrompt(sel);
+  return `Create one single composite storyboard image with six equally sized panels, photorealistic manual-recording realism matching a video that is ${sel.device.desc}, the same subject (${(sel.subject || sel.idea || "").trim()}), the same location (${sel.location} ${sel.timeOfDay}) and the same framing in every panel, no cinematic borders, no cartoon style. Frame 1 - 0:00: the location and subject are established, anticipation in the air. Frame 2 - 0:02: the core event begins — ${(sel.action || sel.idea || "").trim()}. Frame 3 - 0:04: the event develops, the key visual change grows more readable. Frame 4 - 0:06: the change is almost at its peak, tension at its highest. Frame 5 - 0:08: peak moment — ${(sel.fin || "the main event at its clearest result").trim()} — fully formed and clearly readable. Frame 6 - 0:10: the moment settles into its natural ending, subject still recognizable. Add only a small clear timestamp in the corner of each panel and no other text.${customSentence(sel)}`;
+}
+
 /* ---------- Browser UI ---------- */
 if (typeof document !== "undefined") {
   const $ = id => document.getElementById(id);
@@ -361,6 +456,8 @@ if (typeof document !== "undefined") {
     fillSelect("prey", PREY, p => p.name + (p.name === "small mouse" ? " (khusus, hanya jika diminta)" : ""));
     ["substrate", "decor", "background", "water", "camera", "fishStart", "preyStart", "strikeDirection", "strikeTime", "lighting", "sound"].forEach(k => fillOpt(k, OPTIONS[k]));
     fillSelect("showFish", SHOW_FISH, f => f.name);
+    fillSelect("genDevice", GEN_DEVICES, d => d.name);
+    [["genLocation", "location"], ["genTime", "timeOfDay"], ["genWeather", "weather"], ["genCamera", "cameraStyle"], ["genDuration", "duration"], ["genRatio", "ratio"], ["genCrowd", "crowd"], ["genPeak", "peak"], ["genAudio", "audio"]].forEach(([id, key]) => fillOpt(id, GEN_OPTIONS[key]));
     ["substrate", "decor", "background", "water", "camera", "start", "direction", "movement", "peakTime", "lighting", "sound"].forEach(k => fillOpt("show" + k.charAt(0).toUpperCase() + k.slice(1), SHOW_OPTIONS[k]));
     const getSel = () => ({
       fish: FISH[+$("fish").value], prey: PREY[+$("prey").value],
@@ -392,19 +489,43 @@ if (typeof document !== "undefined") {
       custom: $("customRequest").value,
       };
     };
+    const getGenSel = () => ({
+      idea: $("genIdea").value, subject: $("genSubject").value, action: $("genAction").value, fin: $("genFinal").value,
+      device: GEN_DEVICES[+$("genDevice").value] || GEN_DEVICES[0],
+      location: GEN_OPTIONS.location[+$("genLocation").value], timeOfDay: GEN_OPTIONS.timeOfDay[+$("genTime").value],
+      weather: GEN_OPTIONS.weather[+$("genWeather").value], cameraStyle: GEN_OPTIONS.cameraStyle[+$("genCamera").value],
+      duration: GEN_OPTIONS.duration[+$("genDuration").value], ratio: GEN_OPTIONS.ratio[+$("genRatio").value],
+      crowd: GEN_OPTIONS.crowd[+$("genCrowd").value], peak: GEN_OPTIONS.peak[+$("genPeak").value],
+      audio: GEN_OPTIONS.audio[+$("genAudio").value], custom: $("customRequest").value,
+    });
+    function applyGenPreset() {
+      $("genIdea").value = "A single large firework is launched from the ground into the night sky and explodes into the shape of a giant phoenix";
+      $("genSubject").value = "one large professional firework shell";
+      $("genAction").value = "the firework shoots upward leaving a trail of golden sparks, then bursts at the top of the sky";
+      $("genFinal").value = "a giant phoenix silhouette with wide-spread wings, a long flowing tail and a raised head, formed by thousands of gold and orange sparks, clearly readable for several seconds before slowly fading";
+      $("genDevice").value = 0; $("genLocation").value = 0; $("genTime").value = 1; $("genWeather").value = 0;
+      $("genCamera").value = 0; $("genDuration").value = 2; $("genRatio").value = 0; $("genCrowd").value = 2;
+      $("genPeak").value = 1; $("genAudio").value = 0;
+    }
+    $("genPreset").addEventListener("click", () => { applyGenPreset(); $("btnPrompt").click(); });
     const category = () => document.querySelector("input[name=category]:checked").value;
     function applyCategory() {
-      const isShow = category() === "show";
-      $("predatorFields").style.display = isShow ? "none" : "";
-      $("showFields").style.display = isShow ? "" : "none";
-      $("predatorNote").style.display = isShow ? "none" : "";
-      $("showNote").style.display = isShow ? "" : "none";
+      const cat = category();
+      $("predatorFields").style.display = cat === "predator" ? "" : "none";
+      $("showFields").style.display = cat === "show" ? "" : "none";
+      $("generalFields").style.display = cat === "general" ? "" : "none";
+      $("predatorNote").style.display = cat === "predator" ? "" : "none";
+      $("showNote").style.display = cat === "show" ? "" : "none";
+      $("generalNote").style.display = cat === "general" ? "" : "none";
     }
     document.querySelectorAll("input[name=category]").forEach(r => r.addEventListener("change", () => { applyCategory(); $("btnPrompt").click(); }));
     function show(id, text) { $(id).textContent = text; }
     function randomize() {
       const set = (id, n) => { $(id).value = Math.floor(Math.random() * n); };
-      if (category() === "show") {
+      if (category() === "general") {
+        set("genDevice", GEN_DEVICES.length);
+        [["genLocation", "location"], ["genTime", "timeOfDay"], ["genWeather", "weather"], ["genCamera", "cameraStyle"], ["genDuration", "duration"], ["genRatio", "ratio"], ["genCrowd", "crowd"], ["genPeak", "peak"], ["genAudio", "audio"]].forEach(([id, key]) => set(id, GEN_OPTIONS[key].length));
+      } else if (category() === "show") {
         set("showFish", SHOW_FISH.length);
         refreshVariants();
         set("showVariant", (SHOW_FISH[+$("showFish").value] || SHOW_FISH[0]).variants.length);
@@ -439,7 +560,7 @@ if (typeof document !== "undefined") {
     document.querySelectorAll("input[name=aimode]").forEach(r => r.addEventListener("change", applyAiMode));
     $("aiProvider").addEventListener("change", aiProviderUI);
     ["aiKey", "aiModel", "aiBaseUrl"].forEach(id => $(id).addEventListener("change", aiSave));
-    function setBusy(busy) { ["btnPrompt", "btnIdea", "btnBatch", "btnStoryboard", "btnRandom"].forEach(id => { $(id).disabled = busy; }); }
+    function setBusy(busy) { ["btnPrompt", "btnIdea", "btnBatch", "btnStoryboard", "btnRandom", "genPreset"].forEach(id => { const el = $(id); if (el) el.disabled = busy; }); }
     async function runAI(kind, cat, specText, applyTemplate, applyAI) {
       if (!aiEnabled()) { applyTemplate(); return; }
       if (!AI) { show("aiStatus", "File ai.js tidak termuat — menampilkan hasil template."); applyTemplate(); return; }
@@ -461,7 +582,14 @@ if (typeof document !== "undefined") {
     $("btnRandom").onclick = () => { randomize(); $("btnPrompt").click(); };
     $("btnPrompt").onclick = async () => {
       const cat = category();
-      if (cat === "show") {
+      if (cat === "general") {
+        const r = buildGeneralPrompt(getGenSel());
+        const applyTemplate = () => { show("outPrompt", `${r.body}\n\nTitle: ${r.title}\nCaption: ${r.caption}`); show("promptMeta", `${r.chars} karakter - Kategori: Umum / General (ide bebas, gaya rekaman manual realistis)`); };
+        await runAI("prompt", cat, r.body, applyTemplate, res => {
+          show("outPrompt", `${res.text}${res.title ? `\n\nTitle: ${res.title}` : ""}${res.caption ? `\nCaption: ${res.caption}` : ""}`);
+          show("promptMeta", `${res.text.length} karakter - Ditulis ulang AI Fresh - Kategori: Umum / General`);
+        });
+      } else if (cat === "show") {
         const r = buildShowPrompt(getShowSel());
         const applyTemplate = () => { show("outPrompt", `${r.body}\n\nTitle: ${r.title}\nCaption: ${r.caption}`); show("promptMeta", `${r.chars} karakter - Kategori: Kontes / Show (tanpa feeding, puncak display sirip & warna)`); };
         await runAI("prompt", cat, r.body, applyTemplate, res => {
@@ -480,7 +608,8 @@ if (typeof document !== "undefined") {
     };
     $("btnIdea").onclick = async () => {
       const cat = category();
-      const text = cat === "show" ? showIdeaToText(buildShowIdea(getShowSel()), 1) : ideaToText(buildIdea(getSel()), 1);
+      const text = cat === "general" ? generalIdeaToText(buildGeneralIdea(getGenSel()), 1)
+        : cat === "show" ? showIdeaToText(buildShowIdea(getShowSel()), 1) : ideaToText(buildIdea(getSel()), 1);
       await runAI("idea", cat, text, () => show("outIdea", text), res => show("outIdea", res.text));
       activateTab("tabIdea");
     };
@@ -488,7 +617,9 @@ if (typeof document !== "undefined") {
       const cat = category();
       const custom = cleanCustom($("customRequest").value);
       const note = custom ? `\n\nCatatan request khusus (berlaku untuk semua ide di atas): ${custom}` : "";
-      const text = cat === "show"
+      const text = cat === "general"
+        ? "Here are 10 variations of your video concept (same idea, different recording setups):\n\n" + buildGeneralBatch(getGenSel()).map((idea, i) => generalIdeaToText(idea, i + 1)).join("\n\n") + note
+        : cat === "show"
         ? "Here are 10 fresh aquarium show-fish video ideas:\n\n" + buildShowBatch10().map((idea, i) => showIdeaToText(idea, i + 1)).join("\n\n") + note
         : "Here are 10 fresh aquarium predator-fish feeding video ideas:\n\n" + buildBatch10().map((idea, i) => ideaToText(idea, i + 1)).join("\n\n") + note;
       await runAI("batch", cat, text, () => show("outBatch", text), res => show("outBatch", res.text));
@@ -496,7 +627,8 @@ if (typeof document !== "undefined") {
     };
     $("btnStoryboard").onclick = async () => {
       const cat = category();
-      const text = cat === "show" ? buildShowStoryboard(getShowSel()) : buildStoryboard(getSel());
+      const text = cat === "general" ? buildGeneralStoryboard(getGenSel())
+        : cat === "show" ? buildShowStoryboard(getShowSel()) : buildStoryboard(getSel());
       await runAI("storyboard", cat, text, () => show("outStoryboard", text), res => show("outStoryboard", res.text));
       activateTab("tabStoryboard");
     };
@@ -516,4 +648,4 @@ if (typeof document !== "undefined") {
     aiLoad(); aiProviderUI(); applyAiMode(); applyCategory(); refreshVariants(); randomize(); $("btnPrompt").click();
   });
 }
-if (typeof module !== "undefined") { module.exports = { FISH, PREY, OPTIONS, buildPrompt, buildIdea, buildBatch10, buildStoryboard, resolveOutcome, SHOW_FISH, SHOW_OPTIONS, buildShowPrompt, buildShowIdea, buildShowBatch10, buildShowStoryboard, cleanCustom, customSentence, resolveShowFish, showDisplay }; }
+if (typeof module !== "undefined") { module.exports = { FISH, PREY, OPTIONS, buildPrompt, buildIdea, buildBatch10, buildStoryboard, resolveOutcome, SHOW_FISH, SHOW_OPTIONS, buildShowPrompt, buildShowIdea, buildShowBatch10, buildShowStoryboard, cleanCustom, customSentence, resolveShowFish, showDisplay, GEN_DEVICES, GEN_OPTIONS, buildGeneralPrompt, buildGeneralIdea, generalIdeaToText, buildGeneralBatch, buildGeneralStoryboard, genSegments }; }
